@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const API = process.env.API_INTERNA ?? "http://127.0.0.1:8000";
 
@@ -21,4 +22,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+export default withNextIntl(nextConfig);

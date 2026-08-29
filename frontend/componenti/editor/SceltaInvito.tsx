@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,6 +15,7 @@ import type { VoceEvento } from "@/lib/tipi";
  * aperti: nessuna versione con cui applicare un'operazione in sicurezza.
  */
 export function SceltaInvito({ correnteId }: { correnteId: string }) {
+  const t = useTranslations("SceltaInvito");
   const router = useRouter();
   const [aperto, setAperto] = useState(false);
   const [eventi, setEventi] = useState<VoceEvento[] | null>(null);
@@ -69,14 +71,14 @@ export function SceltaInvito({ correnteId }: { correnteId: string }) {
         onClick={() => setAperto((a) => !a)}
       >
         <span aria-hidden="true">☰</span>
-        I miei inviti
+        {t("iMieiInviti")}
         <span aria-hidden="true">▾</span>
       </button>
 
       {aperto && (
         <ul className="scelta-carattere__elenco" role="listbox">
-          {eventi === null && <li className="scelta-invito__stato">Carico…</li>}
-          {eventi?.length === 0 && <li className="scelta-invito__stato">Nessun altro invito</li>}
+          {eventi === null && <li className="scelta-invito__stato">{t("carico")}</li>}
+          {eventi?.length === 0 && <li className="scelta-invito__stato">{t("nessunAltro")}</li>}
           {eventi?.map((e) => (
             <li key={e.id}>
               <button
@@ -88,14 +90,14 @@ export function SceltaInvito({ correnteId }: { correnteId: string }) {
                   if (e.id !== correnteId) router.push(`/e/${e.id}`);
                 }}
               >
-                {e.titolo.trim() || "Invito senza nome"}
+                {e.titolo.trim() || t("senzaNome")}
               </button>
             </li>
           ))}
           <li className="scelta-invito__separatore" aria-hidden="true" />
           <li>
             <button type="button" onClick={() => void nuovoInvito()} disabled={creando}>
-              {creando ? "Creo…" : "+ Nuovo invito"}
+              {creando ? t("creando") : t("nuovoInvito")}
             </button>
           </li>
         </ul>

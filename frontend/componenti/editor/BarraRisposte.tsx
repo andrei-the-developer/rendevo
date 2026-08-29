@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { SelettoreLingua } from "@/componenti/SelettoreLingua";
 import { esci } from "@/lib/api-client";
 import type { Utente } from "@/lib/tipi";
 import { Autenticazione } from "./Autenticazione";
@@ -19,6 +21,7 @@ export function BarraRisposte({
   eventoId: string;
   utenteIniziale: Utente | null;
 }) {
+  const t = useTranslations("Barra");
   const [utente, setUtente] = useState(utenteIniziale);
   const [mostraAuth, setMostraAuth] = useState(false);
   const [messaggio, setMessaggio] = useState<string | null>(null);
@@ -28,17 +31,19 @@ export function BarraRisposte({
       await esci();
       setUtente(null);
     } catch (e) {
-      setMessaggio(e instanceof Error ? e.message : "Non riesco a uscire");
+      setMessaggio(e instanceof Error ? e.message : t("erroreEsci"));
     }
   }
 
   return (
     <div className="barra-editor">
       <Link href={`/e/${eventoId}`} className="tasto-barra">
-        Torna all&apos;invito
+        {t("tornaAllInvito")}
       </Link>
 
       {utente && <SceltaInvito correnteId={eventoId} />}
+
+      <SelettoreLingua />
 
       <span className="barra-editor__spazio" />
 
@@ -50,12 +55,12 @@ export function BarraRisposte({
             {utente.email}
           </span>
           <button type="button" className="tasto-barra" onClick={disconnetti}>
-            Esci
+            {t("esci")}
           </button>
         </div>
       ) : (
         <button type="button" className="tasto-barra" onClick={() => setMostraAuth(true)}>
-          Accedi
+          {t("accedi")}
         </button>
       )}
 

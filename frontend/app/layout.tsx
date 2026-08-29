@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import {
   Cormorant_Garamond,
   Great_Vibes,
@@ -102,11 +104,13 @@ export const metadata: Metadata = {
   description: "Crea un invito, condividi un link, raccogli le risposte.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messaggi = await getMessages();
   const variabili = [
     cormorant.variable, italiana.variable, jost.variable,
     playfair.variable, greatVibes.variable, pinyon.variable,
@@ -115,7 +119,7 @@ export default function RootLayout({
   ].join(" ");
 
   return (
-    <html lang="it" data-scroll-behavior="smooth">
+    <html lang={locale} data-scroll-behavior="smooth">
       <head>
         {/* Il sipario si alza col JavaScript: senza, resterebbe chiuso per
             sempre e l'invito sarebbe irraggiungibile. */}
@@ -123,7 +127,11 @@ export default function RootLayout({
           <style>{".sipario{display:none!important}"}</style>
         </noscript>
       </head>
-      <body className={variabili}>{children}</body>
+      <body className={variabili}>
+        <NextIntlClientProvider locale={locale} messages={messaggi}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

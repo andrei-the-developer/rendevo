@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useId, useState } from "react";
 
 import { accedi, passwordDimenticata, registrati } from "@/lib/api-client";
@@ -15,6 +16,7 @@ export function Autenticazione({
   onAutenticato: (utente: Utente) => void;
   onChiudi: () => void;
 }) {
+  const t = useTranslations("Auth");
   const [modo, setModo] = useState<"accedi" | "registrati" | "dimenticata">("accedi");
   const [inviato, setInviato] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -23,19 +25,20 @@ export function Autenticazione({
   const [errore, setErrore] = useState<string | null>(null);
   const idTitolo = useId();
 
-  /** I controlli li facciamo qui, in italiano, prima di partire.
+  /** I controlli li facciamo qui, nella lingua dell'interfaccia, prima di
+   *  partire.
    *
    *  Il server ha gli stessi limiti (email valida, password da 8 caratteri) ma
-   *  li fa rispettare con un 422, e FastAPI risponde in inglese: "String should
-   *  have at least 8 characters" davanti a un modulo italiano non e` un
-   *  messaggio, e` un intoppo. Il 422 resta la rete di sicurezza. */
+   *  li fa rispettare con un 422, e FastAPI risponde sempre in italiano: un
+   *  messaggio in un'altra lingua dell'interfaccia non e` un messaggio, e`
+   *  un intoppo. Il 422 resta la rete di sicurezza. */
   function controlla(): string | null {
     if (!email.includes("@") || !email.includes(".")) {
-      return "L'indirizzo email non sembra valido.";
+      return t("erroreEmailNonValida");
     }
     if (modo === "dimenticata") return null;    // qui basta l'email
     if (modo === "registrati" && password.length < 8) {
-      return `La password deve avere almeno 8 caratteri (ne hai scritti ${password.length}).`;
+      return t("errorePasswordCorta", { n: password.length });
     }
     return null;
   }
@@ -62,15 +65,15 @@ export function Autenticazione({
       // 409 = email gia` registrata. E` l'errore piu` facile da prendere, ed e`
       // anche l'unico che si risolve da solo cambiando modo: glielo diciamo.
       if (err instanceof ErroreApi && err.stato === 409) {
-        setErrore("Esiste già un account con questa email. Passa ad Accedi.");
+        setErrore(t("erroreEmailEsistente"));
         setModo("accedi");
       } else if (err instanceof ErroreApi && err.stato === 429) {
-        setErrore("Troppi tentativi di seguito. Aspetta qualche minuto e riprova.");
+        setErrore(t("erroreTroppiTentativi"));
       } else if (err instanceof TypeError) {
         // fetch fallito: rete assente, non un rifiuto del server.
-        setErrore("Non riesco a raggiungere il server. Controlla la connessione.");
+        setErrore(t("erroreRete"));
       } else {
-        setErrore(err instanceof Error ? err.message : "Operazione non riuscita.");
+        setErrore(err instanceof Error ? err.message : t("erroreGenerico"));
       }
     } finally {
       setInCorso(false);
@@ -93,11 +96,11 @@ export function Autenticazione({
       >
         <div className="popup__testata">
           <h2 id={idTitolo}>
-            {modo === "accedi" && "Accedi"}
-            {modo === "registrati" && "Crea un account"}
-            {modo === "dimenticata" && "Password dimenticata"}
+            {modo === "accedi" && t("titoloAccedi")}
+            {modo === "registrati" && t("titoloRegistrati")}
+            {modo === "dimenticata" && t("titoloDimenticata")}
           </h2>
-          <button type="button" className="popup__chiudi" onClick={onChiudi} aria-label="Chiudi">
+          <button type="button" className="popup__chiudi" onClick={onChiudi} aria-label={t("chiudi")}>
             ×
           </button>
         </div>
@@ -106,8 +109,7 @@ export function Autenticazione({
           <div className="popup__corpo">
             <p className="auth-nota">{inviato}</p>
             <p style={{ fontSize: "0.85rem", color: "#666b6e", margin: 0 }}>
-              Il link vale un&apos;ora. Se non arriva entro qualche minuto,
-              controlla la posta indesiderata.
+              {t("inviatoNota")}
             </p>
           </div>
         ) : (
@@ -116,27 +118,25 @@ export function Autenticazione({
             {errore && <p className="errore-popup" role="alert">{errore}</p>}
 
             <p className="auth-nota">
-              {modo === "accedi" &&
-                "L'invito che stai modificando resta al suo posto: accedendo lo ritrovi collegato al tuo account."}
-              {modo === "registrati" &&
-                "L'invito che stai modificando in questo browser verrà collegato al nuovo account, non perso."}
-              {modo === "dimenticata" &&
-                "Scrivi l'indirizzo con cui ti sei registrato: ti mandiamo un link per sceglierne una nuova."}
+              {modo === "accedi" && t("notaAccedi")}
+              {modo === "registrati" && t("notaRegistrati")}
+              {modo === "dimenticata" && t("notaDimenticata")}
             </p>
 
             {modo === "registrati" && (
               <p className="auth-nota" style={{ fontSize: "0.78rem" }}>
-                Creando l&apos;account accetti i{" "}
-                <a href="/termini" target="_blank" rel="noopener noreferrer">
-                  termini e condizioni
-                </a>{" "}
-                di Rendevo — anche la parte sui diritti d&apos;autore se aggiungi
-                musica al tuo invito.
+                {t.rich("consensoTermini", {
+                  link: (chunks) => (
+                    <a href="/termini" target="_blank" rel="noopener noreferrer">
+                      {chunks}
+                    </a>
+                  ),
+                })}
               </p>
             )}
 
             <label className="campo-popup">
-              <span>Email</span>
+              <span>{t("email")}</span>
               <input
                 type="email"
                 required
@@ -147,7 +147,7 @@ export function Autenticazione({
             </label>
             {modo !== "dimenticata" && (
             <label className="campo-popup">
-              <span>Password</span>
+              <span>{t("password")}</span>
               <input
                 type="password"
                 required
@@ -156,7 +156,7 @@ export function Autenticazione({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {modo === "registrati" && <small>Almeno 8 caratteri.</small>}
+              {modo === "registrati" && <small>{t("passwordSuggerimento")}</small>}
             </label>
             )}
 
@@ -169,7 +169,7 @@ export function Autenticazione({
                   setErrore(null);
                 }}
               >
-                Ho dimenticato la password
+                {t("passwordDimenticataLink")}
               </button>
             )}
           </div>
@@ -183,9 +183,9 @@ export function Autenticazione({
                 setErrore(null);
               }}
             >
-              {modo === "accedi" && "Non hai un account? Registrati"}
-              {modo === "registrati" && "Hai già un account? Accedi"}
-              {modo === "dimenticata" && "Torna ad Accedi"}
+              {modo === "accedi" && t("vaiARegistrati")}
+              {modo === "registrati" && t("vaiAAccedi")}
+              {modo === "dimenticata" && t("tornaAccedi")}
             </button>
             <button
               type="submit"
@@ -193,12 +193,12 @@ export function Autenticazione({
               disabled={inCorso}
             >
               {inCorso
-                ? "Un momento…"
+                ? t("inCorso")
                 : modo === "accedi"
-                  ? "Accedi"
+                  ? t("bottoneAccedi")
                   : modo === "registrati"
-                    ? "Crea l'account"
-                    : "Mandami il link"}
+                    ? t("bottoneRegistrati")
+                    : t("bottoneDimenticata")}
             </button>
           </div>
         </form>

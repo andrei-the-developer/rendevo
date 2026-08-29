@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +18,7 @@ import type { Evento } from "@/lib/tipi";
  * apertura o ricarica creerebbe un invito vuoto nuovo.
  */
 export default function Edit() {
+  const t = useTranslations("Edit");
   const router = useRouter();
   const [errore, setErrore] = useState<string | null>(null);
   const partito = useRef(false);
@@ -38,21 +40,21 @@ export default function Edit() {
         });
         router.replace(`/e/${nuovo.id}`);
       } catch (e) {
-        setErrore(e instanceof Error ? e.message : "Non riesco a preparare l'invito.");
+        setErrore(e instanceof Error ? e.message : t("erroreGenerico"));
       }
     })();
-  }, [router]);
+  }, [router, t]);
 
   return (
     <main className="pagina-app">
       <div className="app-contenuto app-contenuto--centrato">
         {errore ? (
           <>
-            <h1 className="app-titolo">Qualcosa non ha funzionato</h1>
+            <h1 className="app-titolo">{t("titoloErrore")}</h1>
             <p className="app-sommario">{errore}</p>
           </>
         ) : (
-          <p className="app-sommario">Preparo il tuo invito…</p>
+          <p className="app-sommario">{t("preparo")}</p>
         )}
       </div>
     </main>

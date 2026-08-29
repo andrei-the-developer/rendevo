@@ -232,6 +232,63 @@ footer {
 footer a { color: inherit; }
 footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 
+/* ------------------------------------------------------ selettore lingua */
+/* Nello stesso punto e con lo stesso linguaggio visivo del selettore
+   nell'app (vedi SelettoreLingua.tsx): una pillola, una freccia disegnata a
+   mano. Qui e' rifatto in JS puro perche' questa pagina e' HTML statico
+   servito da Caddy, non parte dell'app Next.js. */
+.selettore-lingua {
+  position: absolute;
+  top: 1.4rem;
+  right: min(1.4rem, calc((100% - 64rem) / 2 + 1.4rem));
+  z-index: 5;
+}
+.selettore-lingua__tasto {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--su-primario);
+  background: rgb(255 253 247 / 0.1);
+  border: 1px solid rgb(255 253 247 / 0.35);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+}
+.selettore-lingua__tasto:hover { background: rgb(255 253 247 / 0.18); }
+.selettore-lingua__elenco {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 6;
+  min-width: 9rem;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: #fffdf7;
+  border: 1px solid var(--bordo);
+  border-radius: 8px;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.5);
+}
+.selettore-lingua__elenco[hidden] { display: none; }
+.selettore-lingua__elenco button {
+  appearance: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  color: var(--testo);
+  font: inherit;
+  cursor: pointer;
+}
+.selettore-lingua__elenco button:hover { background: var(--fondo-alt); }
+.selettore-lingua__elenco button[aria-selected="true"] { background: #eef2e4; color: var(--primario); }
+
 /* Chi ha chiesto meno animazioni non deve vedere il tasto saltare. */
 @media (prefers-reduced-motion: reduce) {
   .tasto { transition: none; }
@@ -243,16 +300,24 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 <body>
 
 <header class="hero">
+  <div class="selettore-lingua">
+    <button type="button" class="selettore-lingua__tasto" id="lingua-tasto" aria-haspopup="listbox" aria-expanded="false">
+      <span aria-hidden="true">🌐</span>
+      <span id="lingua-corrente">Italiano</span>
+      <span aria-hidden="true">▾</span>
+    </button>
+    <ul class="selettore-lingua__elenco" id="lingua-elenco" role="listbox" hidden></ul>
+  </div>
   <div class="gabbia">
-    <p class="occhiello">Inviti digitali</p>
-    <h1>La partecipazione<br><em>che si apre come una busta</em></h1>
-    <p class="sottotitolo">
+    <p class="occhiello" data-i18n="occhiello">Inviti digitali</p>
+    <h1 data-i18n-html="h1">La partecipazione<br><em>che si apre come una busta</em></h1>
+    <p class="sottotitolo" data-i18n="sottotitolo">
       Matrimoni, compleanni e feste. Chi lo riceve apre una busta con il
       sigillo, sente la musica, legge tutto e ti dice se ci sarà. Dal telefono,
       senza scaricare niente.
     </p>
-    <a class="tasto" href="/edit">Crea il tuo invito</a>
-    <p class="sotto-tasto">
+    <a class="tasto" href="/edit" data-i18n="cta">Crea il tuo invito</a>
+    <p class="sotto-tasto" data-i18n="sottoCta">
       Gratis, senza registrarti. Si crea dal computer, si riceve dal telefono.
     </p>
   </div>
@@ -261,12 +326,12 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 <main>
   <section class="perche">
     <div class="gabbia">
-      <p>
+      <p data-i18n-html="percheP1">
         Cento partecipazioni di carta costano fra <strong>200 e 600 euro</strong>,
         si spediscono a mano, e due settimane prima ancora non sai quanti
         saranno a tavola.
       </p>
-      <p>
+      <p data-i18n="percheP2">
         Un invito digitale si manda su WhatsApp in un minuto, si corregge se
         cambia l'orario, e le risposte arrivano da sole.
       </p>
@@ -275,12 +340,12 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 
   <section class="passi">
     <div class="gabbia">
-      <h2>Come funziona</h2>
+      <h2 data-i18n="comeFunziona">Come funziona</h2>
       <div class="griglia">
         <article class="passo">
           <span class="numero">1</span>
-          <h3>Scegli lo stile e scrivi</h3>
-          <p>
+          <h3 data-i18n="passo1Titolo">Scegli lo stile e scrivi</h3>
+          <p data-i18n="passo1Testo">
             Parti da un invito già pronto e clicca su qualsiasi parte per
             cambiarla: data, luogo con la mappa, programma della giornata,
             foto, un brano che parte all'apertura, il conto alla rovescia.
@@ -289,16 +354,16 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
         </article>
         <article class="passo">
           <span class="numero">2</span>
-          <h3>Copia il link</h3>
-          <p>
+          <h3 data-i18n="passo2Titolo">Copia il link</h3>
+          <p data-i18n="passo2Testo">
             Un pulsante ti dà l'indirizzo del tuo invito. È sempre lo stesso:
             puoi mandarlo a tutti, anche in momenti diversi, senza confonderti.
           </p>
         </article>
         <article class="passo">
           <span class="numero">3</span>
-          <h3>Raccogli le risposte</h3>
-          <p>
+          <h3 data-i18n="passo3Titolo">Raccogli le risposte</h3>
+          <p data-i18n="passo3Testo">
             I tuoi invitati aprono la busta dal telefono e dicono se ci saranno
             e in quanti. Niente da installare e niente registrazione, né per te
             né per loro.
@@ -310,38 +375,283 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 
   <section class="riceve">
     <div class="gabbia">
-      <h2>Cosa riceve chi è invitato</h2>
-      <ul class="elenco">
-        <li>La busta con il sigillo, che si apre toccandola</li>
-        <li>La musica, che parte all'apertura</li>
-        <li>Il conto alla rovescia</li>
-        <li>Il programma, ora per ora</li>
-        <li>Il luogo con la mappa</li>
-        <li>Le vostre foto</li>
-        <li>Il pulsante per dire se ci sarà, e in quanti</li>
+      <h2 data-i18n="cosaRiceve">Cosa riceve chi è invitato</h2>
+      <ul class="elenco" id="elenco-riceve">
+        <li data-i18n="elenco0">La busta con il sigillo, che si apre toccandola</li>
+        <li data-i18n="elenco1">La musica, che parte all'apertura</li>
+        <li data-i18n="elenco2">Il conto alla rovescia</li>
+        <li data-i18n="elenco3">Il programma, ora per ora</li>
+        <li data-i18n="elenco4">Il luogo con la mappa</li>
+        <li data-i18n="elenco5">Le vostre foto</li>
+        <li data-i18n="elenco6">Il pulsante per dire se ci sarà, e in quanti</li>
       </ul>
     </div>
   </section>
 
   <section class="chiusura">
     <div class="gabbia">
-      <h2>Provalo adesso</h2>
-      <p>
+      <h2 data-i18n="provaloTitolo">Provalo adesso</h2>
+      <p data-i18n="provaloTesto">
         Lo stiamo ancora costruendo, ed è gratuito. Se ti va di provarlo prima
         degli altri e dirci cosa non funziona, siamo tutt'orecchi.
       </p>
-      <a class="tasto tasto--scuro" href="/edit">Crea il tuo invito</a>
+      <a class="tasto tasto--scuro" href="/edit" data-i18n="cta">Crea il tuo invito</a>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="gabbia">
-    Rendevo — fatto in Italia.
+    <span data-i18n="footerFatto">Rendevo — fatto in Italia.</span>
     <span class="separatore">·</span>
-    <a href="/termini">Termini e condizioni</a>
+    <a href="/termini" data-i18n="footerTermini">Termini e condizioni</a>
   </div>
 </footer>
+
+<script>
+/* Traduzione della landing, lato client: questa pagina è HTML statico
+   servito da Caddy, fuori dall'app Next.js, quindi non può usare next-intl.
+   Stessa lingua dell'app però: legge/scrive lo stesso cookie "locale" (vedi
+   frontend/i18n/request.ts), così scegliere la lingua qui o nell'editor è
+   la stessa scelta. I crawler (WhatsApp, Google) non eseguono questo
+   script: vedono sempre l'italiano scritto nell'HTML, compresi i tag
+   `og:*` in testa — va bene così, l'anteprima di condivisione non deve
+   cambiare lingua da sola. */
+(function () {
+  "use strict";
+
+  var LINGUE = ["it", "en", "fr", "es", "de"];
+  var NOMI = { it: "Italiano", en: "English", fr: "Français", es: "Español", de: "Deutsch" };
+
+  var TESTI = {
+    it: {
+      titolo: "Inviti digitali per matrimoni, compleanni e feste",
+      occhiello: "Inviti digitali",
+      h1: "La partecipazione<br><em>che si apre come una busta</em>",
+      sottotitolo: "Matrimoni, compleanni e feste. Chi lo riceve apre una busta con il sigillo, sente la musica, legge tutto e ti dice se ci sarà. Dal telefono, senza scaricare niente.",
+      cta: "Crea il tuo invito",
+      sottoCta: "Gratis, senza registrarti. Si crea dal computer, si riceve dal telefono.",
+      percheP1: "Cento partecipazioni di carta costano fra <strong>200 e 600 euro</strong>, si spediscono a mano, e due settimane prima ancora non sai quanti saranno a tavola.",
+      percheP2: "Un invito digitale si manda su WhatsApp in un minuto, si corregge se cambia l'orario, e le risposte arrivano da sole.",
+      comeFunziona: "Come funziona",
+      passo1Titolo: "Scegli lo stile e scrivi",
+      passo1Testo: "Parti da un invito già pronto e clicca su qualsiasi parte per cambiarla: data, luogo con la mappa, programma della giornata, foto, un brano che parte all'apertura, il conto alla rovescia. Dal computer, con calma.",
+      passo2Titolo: "Copia il link",
+      passo2Testo: "Un pulsante ti dà l'indirizzo del tuo invito. È sempre lo stesso: puoi mandarlo a tutti, anche in momenti diversi, senza confonderti.",
+      passo3Titolo: "Raccogli le risposte",
+      passo3Testo: "I tuoi invitati aprono la busta dal telefono e dicono se ci saranno e in quanti. Niente da installare e niente registrazione, né per te né per loro.",
+      cosaRiceve: "Cosa riceve chi è invitato",
+      elenco0: "La busta con il sigillo, che si apre toccandola",
+      elenco1: "La musica, che parte all'apertura",
+      elenco2: "Il conto alla rovescia",
+      elenco3: "Il programma, ora per ora",
+      elenco4: "Il luogo con la mappa",
+      elenco5: "Le vostre foto",
+      elenco6: "Il pulsante per dire se ci sarà, e in quanti",
+      provaloTitolo: "Provalo adesso",
+      provaloTesto: "Lo stiamo ancora costruendo, ed è gratuito. Se ti va di provarlo prima degli altri e dirci cosa non funziona, siamo tutt'orecchi.",
+      footerFatto: "Rendevo — fatto in Italia.",
+      footerTermini: "Termini e condizioni"
+    },
+    en: {
+      titolo: "Digital invitations for weddings, birthdays and parties",
+      occhiello: "Digital invitations",
+      h1: "The invitation<br><em>that opens like an envelope</em>",
+      sottotitolo: "Weddings, birthdays and parties. Whoever receives it opens a sealed envelope, hears the music, reads everything and tells you whether they'll be there. From their phone, nothing to download.",
+      cta: "Create your invitation",
+      sottoCta: "Free, no sign-up needed. Made on a computer, received on a phone.",
+      percheP1: "A hundred paper invitations cost between <strong>200 and 600 euros</strong>, get mailed by hand, and two weeks out you still don't know how many people are coming.",
+      percheP2: "A digital invitation is sent on WhatsApp in a minute, can be corrected if the time changes, and responses come in on their own.",
+      comeFunziona: "How it works",
+      passo1Titolo: "Choose a style and write",
+      passo1Testo: "Start from an invitation that's already built and click any part to change it: date, venue with a map, day's schedule, photos, a song that plays on opening, a countdown. From a computer, at your own pace.",
+      passo2Titolo: "Copy the link",
+      passo2Testo: "One button gives you your invitation's address. It's always the same one: you can send it to everyone, even at different times, without getting confused.",
+      passo3Titolo: "Collect the responses",
+      passo3Testo: "Your guests open the envelope on their phone and tell you whether they're coming and how many. Nothing to install and no sign-up, for you or for them.",
+      cosaRiceve: "What your guests get",
+      elenco0: "The sealed envelope, which opens with a tap",
+      elenco1: "The music, which plays on opening",
+      elenco2: "The countdown",
+      elenco3: "The schedule, hour by hour",
+      elenco4: "The venue, with a map",
+      elenco5: "Your photos",
+      elenco6: "A button to say whether they're coming, and how many",
+      provaloTitolo: "Try it now",
+      provaloTesto: "We're still building it, and it's free. If you'd like to try it before everyone else and tell us what's not working, we're all ears.",
+      footerFatto: "Rendevo — made in Italy.",
+      footerTermini: "Terms and conditions"
+    },
+    fr: {
+      titolo: "Faire-part numériques pour mariages, anniversaires et fêtes",
+      occhiello: "Faire-part numériques",
+      h1: "Le faire-part<br><em>qui s'ouvre comme une enveloppe</em>",
+      sottotitolo: "Mariages, anniversaires et fêtes. La personne qui le reçoit ouvre une enveloppe cachetée, entend la musique, lit tout et vous dit si elle sera présente. Depuis son téléphone, sans rien télécharger.",
+      cta: "Créez votre faire-part",
+      sottoCta: "Gratuit, sans inscription. Se crée depuis un ordinateur, se reçoit depuis un téléphone.",
+      percheP1: "Cent faire-part en papier coûtent entre <strong>200 et 600 euros</strong>, s'envoient à la main, et deux semaines avant vous ne savez toujours pas combien seront à table.",
+      percheP2: "Un faire-part numérique s'envoie sur WhatsApp en une minute, se corrige si l'horaire change, et les réponses arrivent toutes seules.",
+      comeFunziona: "Comment ça marche",
+      passo1Titolo: "Choisissez le style et écrivez",
+      passo1Testo: "Partez d'un faire-part déjà prêt et cliquez sur n'importe quelle partie pour la modifier : date, lieu avec la carte, déroulé de la journée, photos, une chanson qui démarre à l'ouverture, le compte à rebours. Depuis un ordinateur, tranquillement.",
+      passo2Titolo: "Copiez le lien",
+      passo2Testo: "Un bouton vous donne l'adresse de votre faire-part. C'est toujours la même : vous pouvez l'envoyer à tout le monde, même à des moments différents, sans vous perdre.",
+      passo3Titolo: "Recueillez les réponses",
+      passo3Testo: "Vos invités ouvrent l'enveloppe depuis leur téléphone et vous disent s'ils seront présents et combien ils seront. Rien à installer, aucune inscription, ni pour vous ni pour eux.",
+      cosaRiceve: "Ce que reçoit la personne invitée",
+      elenco0: "L'enveloppe cachetée, qui s'ouvre d'un geste",
+      elenco1: "La musique, qui démarre à l'ouverture",
+      elenco2: "Le compte à rebours",
+      elenco3: "Le déroulé, heure par heure",
+      elenco4: "Le lieu, avec la carte",
+      elenco5: "Vos photos",
+      elenco6: "Le bouton pour dire si l'invité sera présent, et combien",
+      provaloTitolo: "Essayez-le maintenant",
+      provaloTesto: "Nous sommes encore en train de le construire, et c'est gratuit. Si l'envie vous prend de l'essayer avant tout le monde et de nous dire ce qui ne va pas, on est tout ouïe.",
+      footerFatto: "Rendevo — fabriqué en Italie.",
+      footerTermini: "Conditions générales"
+    },
+    es: {
+      titolo: "Invitaciones digitales para bodas, cumpleaños y fiestas",
+      occhiello: "Invitaciones digitales",
+      h1: "La invitación<br><em>que se abre como un sobre</em>",
+      sottotitolo: "Bodas, cumpleaños y fiestas. Quien la recibe abre un sobre lacrado, escucha la música, lo lee todo y te dice si estará allí. Desde el teléfono, sin descargar nada.",
+      cta: "Crea tu invitación",
+      sottoCta: "Gratis, sin registrarte. Se crea desde el ordenador, se recibe desde el teléfono.",
+      percheP1: "Cien invitaciones de papel cuestan entre <strong>200 y 600 euros</strong>, se envían a mano, y dos semanas antes todavía no sabes cuántos estaréis en la mesa.",
+      percheP2: "Una invitación digital se envía por WhatsApp en un minuto, se corrige si cambia el horario, y las respuestas llegan solas.",
+      comeFunziona: "Cómo funciona",
+      passo1Titolo: "Elige el estilo y escribe",
+      passo1Testo: "Parte de una invitación ya lista y haz clic en cualquier parte para cambiarla: fecha, lugar con el mapa, programa del día, fotos, una canción que suena al abrirla, la cuenta atrás. Desde el ordenador, con calma.",
+      passo2Titolo: "Copia el enlace",
+      passo2Testo: "Un botón te da la dirección de tu invitación. Es siempre la misma: puedes mandarla a todos, incluso en momentos distintos, sin liarte.",
+      passo3Titolo: "Recoge las respuestas",
+      passo3Testo: "Tus invitados abren el sobre desde el teléfono y te dicen si asistirán y cuántos serán. Nada que instalar y ningún registro, ni para ti ni para ellos.",
+      cosaRiceve: "Qué recibe la persona invitada",
+      elenco0: "El sobre lacrado, que se abre con un toque",
+      elenco1: "La música, que suena al abrirlo",
+      elenco2: "La cuenta atrás",
+      elenco3: "El programa, hora por hora",
+      elenco4: "El lugar, con el mapa",
+      elenco5: "Vuestras fotos",
+      elenco6: "El botón para decir si asistirá, y cuántos",
+      provaloTitolo: "Pruébalo ahora",
+      provaloTesto: "Todavía lo estamos construyendo, y es gratuito. Si te apetece probarlo antes que nadie y contarnos qué no funciona, somos todo oídos.",
+      footerFatto: "Rendevo — hecho en Italia.",
+      footerTermini: "Términos y condiciones"
+    },
+    de: {
+      titolo: "Digitale Einladungen für Hochzeiten, Geburtstage und Feiern",
+      occhiello: "Digitale Einladungen",
+      h1: "Die Einladung<br><em>die sich wie ein Umschlag öffnet</em>",
+      sottotitolo: "Hochzeiten, Geburtstage und Feiern. Wer sie erhält, öffnet einen versiegelten Umschlag, hört die Musik, liest alles und sagt dir, ob er kommt. Vom Handy aus, ohne etwas herunterzuladen.",
+      cta: "Erstelle deine Einladung",
+      sottoCta: "Kostenlos, keine Anmeldung nötig. Am Computer erstellt, am Handy empfangen.",
+      percheP1: "Hundert Papiereinladungen kosten zwischen <strong>200 und 600 Euro</strong>, werden von Hand verschickt, und zwei Wochen vorher weißt du immer noch nicht, wie viele am Tisch sitzen werden.",
+      percheP2: "Eine digitale Einladung wird in einer Minute über WhatsApp verschickt, lässt sich korrigieren, wenn sich die Uhrzeit ändert, und die Antworten kommen von allein.",
+      comeFunziona: "So funktioniert's",
+      passo1Titolo: "Stil wählen und schreiben",
+      passo1Testo: "Starte mit einer bereits fertigen Einladung und klicke auf jeden beliebigen Teil, um ihn zu ändern: Datum, Ort mit Karte, Tagesablauf, Fotos, ein Lied, das beim Öffnen startet, ein Countdown. Am Computer, in aller Ruhe.",
+      passo2Titolo: "Link kopieren",
+      passo2Testo: "Ein Knopf gibt dir die Adresse deiner Einladung. Es ist immer dieselbe: Du kannst sie an alle schicken, auch zu unterschiedlichen Zeiten, ohne durcheinanderzukommen.",
+      passo3Titolo: "Antworten sammeln",
+      passo3Testo: "Deine Gäste öffnen den Umschlag auf dem Handy und sagen dir, ob und zu wie vielt sie kommen. Nichts zu installieren und keine Anmeldung, weder für dich noch für sie.",
+      cosaRiceve: "Was die eingeladene Person bekommt",
+      elenco0: "Den versiegelten Umschlag, der sich mit einer Berührung öffnet",
+      elenco1: "Die Musik, die beim Öffnen startet",
+      elenco2: "Den Countdown",
+      elenco3: "Den Ablauf, Stunde für Stunde",
+      elenco4: "Den Ort, mit Karte",
+      elenco5: "Eure Fotos",
+      elenco6: "Den Knopf, um zu sagen, ob und zu wie vielt man kommt",
+      provaloTitolo: "Jetzt ausprobieren",
+      provaloTesto: "Wir bauen noch daran, und es ist kostenlos. Wenn du es vor allen anderen ausprobieren und uns sagen möchtest, was nicht funktioniert, sind wir ganz Ohr.",
+      footerFatto: "Rendevo — hergestellt in Italien.",
+      footerTermini: "Allgemeine Geschäftsbedingungen"
+    }
+  };
+
+  function leggiCookie(nome) {
+    var m = document.cookie.match(new RegExp("(?:^|; )" + nome + "=([^;]*)"));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  function scriviCookie(nome, valore) {
+    document.cookie = nome + "=" + encodeURIComponent(valore) + "; path=/; max-age=" + (60 * 60 * 24 * 365) + "; SameSite=Lax";
+  }
+  function daBrowser() {
+    var lingue = navigator.languages || [navigator.language || "it"];
+    for (var i = 0; i < lingue.length; i++) {
+      var pref = String(lingue[i]).slice(0, 2).toLowerCase();
+      if (LINGUE.indexOf(pref) !== -1) return pref;
+    }
+    return "it";
+  }
+
+  function applica(lingua) {
+    var testi = TESTI[lingua] || TESTI.it;
+    document.title = testi.titolo;
+    document.documentElement.lang = lingua;
+    document.getElementById("lingua-corrente").textContent = NOMI[lingua];
+    var piatti = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < piatti.length; i++) {
+      var chiave = piatti[i].getAttribute("data-i18n");
+      if (testi[chiave]) piatti[i].textContent = testi[chiave];
+    }
+    var conHtml = document.querySelectorAll("[data-i18n-html]");
+    for (var j = 0; j < conHtml.length; j++) {
+      var chiaveHtml = conHtml[j].getAttribute("data-i18n-html");
+      if (testi[chiaveHtml]) conHtml[j].innerHTML = testi[chiaveHtml];
+    }
+  }
+
+  var lingua = leggiCookie("locale");
+  if (!lingua || LINGUE.indexOf(lingua) === -1) lingua = daBrowser();
+  applica(lingua);
+
+  // Il selettore: stessa forma di quello nell'app, costruito qui a mano.
+  var tasto = document.getElementById("lingua-tasto");
+  var elenco = document.getElementById("lingua-elenco");
+  LINGUE.forEach(function (codice) {
+    var voce = document.createElement("li");
+    var bottone = document.createElement("button");
+    bottone.type = "button";
+    bottone.setAttribute("role", "option");
+    bottone.textContent = NOMI[codice];
+    bottone.addEventListener("click", function () {
+      lingua = codice;
+      scriviCookie("locale", codice);
+      applica(codice);
+      chiudi();
+    });
+    voce.appendChild(bottone);
+    elenco.appendChild(voce);
+  });
+  function aggiornaSelezionati() {
+    var bottoni = elenco.querySelectorAll("button");
+    for (var i = 0; i < bottoni.length; i++) {
+      bottoni[i].setAttribute("aria-selected", String(LINGUE[i] === lingua));
+    }
+  }
+  function apri() {
+    elenco.hidden = false;
+    tasto.setAttribute("aria-expanded", "true");
+    aggiornaSelezionati();
+  }
+  function chiudi() {
+    elenco.hidden = true;
+    tasto.setAttribute("aria-expanded", "false");
+  }
+  tasto.addEventListener("click", function () {
+    if (elenco.hidden) apri(); else chiudi();
+  });
+  document.addEventListener("pointerdown", function (e) {
+    if (!elenco.hidden && !e.target.closest(".selettore-lingua")) chiudi();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") chiudi();
+  });
+})();
+</script>
 
 </body>
 </html>

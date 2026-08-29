@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useCallback, useRef, useState } from "react";
 
 import { Fiori } from "@/componenti/blocchi/Blocco";
 import { ListaBlocchi } from "@/componenti/blocchi/ListaBlocchi";
+import { SelettoreLingua } from "@/componenti/SelettoreLingua";
 import { applicaOperazioni, chiamaClient, esci } from "@/lib/api-client";
 import type { Aspetto, Blocco, Evento, Operazione, TipoBlocco, Utente } from "@/lib/tipi";
 import { AggiungiSezione } from "./AggiungiSezione";
@@ -67,6 +69,7 @@ export function Tela({
   aspetto: Aspetto;
   utenteIniziale: Utente | null;
 }) {
+  const t = useTranslations("Barra");
   const [evento, setEvento] = useState(iniziale);
   const [titolo, setTitolo] = useState(iniziale.titolo);
   const [apertoId, setApertoId] = useState<string | null>(null);
@@ -351,7 +354,7 @@ export function Tela({
       await esci();
       setUtente(null);
     } catch (e) {
-      setMessaggio(e instanceof Error ? e.message : "Non riesco a uscire");
+      setMessaggio(e instanceof Error ? e.message : t("erroreEsci"));
     }
   }
 
@@ -359,18 +362,18 @@ export function Tela({
     <>
       <div className="barra-editor">
         <span className="barra-editor__stato">
-          {stato === "salvataggio" && "Salvo…"}
+          {stato === "salvataggio" && t("salvo")}
           {stato === "pronto" && `v${evento.versione}`}
-          {stato === "errore" && "Errore"}
+          {stato === "errore" && t("errore")}
         </span>
 
         <label className="rinomina-invito">
-          <span className="scelta-tema__etichetta">Nome</span>
+          <span className="scelta-tema__etichetta">{t("nomeEtichetta")}</span>
           <input
             value={titolo}
-            placeholder="Invito senza nome"
-            aria-label="Nome dell'invito, solo per te"
-            title="Il nome con cui lo riconosci nel tuo elenco: non lo vede l'invitato"
+            placeholder={t("nomePlaceholder")}
+            aria-label={t("nomeTitolo")}
+            title={t("nomeTitolo")}
             onChange={(e) => setTitolo(e.target.value)}
             onBlur={() => void salvaTitolo()}
             onKeyDown={(e) => {
@@ -382,7 +385,7 @@ export function Tela({
         {utente && <SceltaInvito correnteId={evento.id} />}
 
         <label className="scelta-tema">
-          <span className="scelta-tema__etichetta">Tema</span>
+          <span className="scelta-tema__etichetta">{t("tema")}</span>
           <span className="scelta-tema__caja">
             <select
               value={evento.tema}
@@ -400,7 +403,7 @@ export function Tela({
         </label>
 
         <label className="scelta-tema">
-          <span className="scelta-tema__etichetta">Colori</span>
+          <span className="scelta-tema__etichetta">{t("colori")}</span>
           <span className="scelta-tema__caja">
             <select
               value={evento.palette}
@@ -426,7 +429,7 @@ export function Tela({
         />
 
         <Link href={`/e/${evento.id}/risposte`} className="tasto-barra">
-          Risposte
+          {t("risposte")}
         </Link>
 
         <button
@@ -434,14 +437,16 @@ export function Tela({
           className="tasto-barra tasto-barra--principale"
           onClick={copiaLinkInvito}
         >
-          {copiato ? "Copiato!" : "Copia link invito"}
+          {copiato ? t("copiato") : t("copiaLink")}
         </button>
+
+        <SelettoreLingua />
 
         <span className="barra-editor__spazio" />
 
         {link && (
           <>
-            <span className="barra-editor__etichetta-link">Link da mandare</span>
+            <span className="barra-editor__etichetta-link">{t("linkEtichetta")}</span>
             <input
               className="tasto-barra"
               readOnly
@@ -460,12 +465,12 @@ export function Tela({
               {utente.email}
             </span>
             <button type="button" className="tasto-barra" onClick={disconnetti}>
-              Esci
+              {t("esci")}
             </button>
           </div>
         ) : (
           <button type="button" className="tasto-barra" onClick={() => setMostraAuth(true)}>
-            Accedi
+            {t("accedi")}
           </button>
         )}
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import type { VoceAspetto } from "@/lib/tipi";
@@ -22,6 +23,7 @@ export function ScegliCarattere({
   valore: string;
   onCambia: (id: string) => void;
 }) {
+  const t = useTranslations("Barra");
   const [aperto, setAperto] = useState(false);
   const guscio = useRef<HTMLDivElement>(null);
 
@@ -47,7 +49,7 @@ export function ScegliCarattere({
 
   return (
     <div className="scelta-carattere" ref={guscio}>
-      <span className="scelta-tema__etichetta">Carattere</span>
+      <span className="scelta-tema__etichetta">{t("carattere")}</span>
       <button
         type="button"
         className="scelta-carattere__tasto"
