@@ -5,13 +5,26 @@ import { useEffect, useState } from "react";
 
 const CHIAVE = "consenso-clarity";
 
+/** Snippet ufficiale di Microsoft Clarity (installazione "Manual"): non solo
+ *  accoda lo script, definisce anche `window.clarity` come una coda che
+ *  funziona anche prima che lo script sia caricato — senza, una chiamata
+ *  come `clarity('set', ...)` fatta troppo presto darebbe errore. */
 function iniettaClarity(id: string) {
-  if (document.getElementById("script-clarity")) return;
-  const s = document.createElement("script");
-  s.id = "script-clarity";
-  s.async = true;
-  s.src = `https://www.clarity.ms/tag/${id}`;
-  document.head.appendChild(s);
+  if ((window as unknown as { clarity?: unknown }).clarity) return;
+  /* eslint-disable */
+  (function (c: any, l: Document, a: string, r: string, i: string) {
+    c[a] =
+      c[a] ||
+      function () {
+        (c[a].q = c[a].q || []).push(arguments);
+      };
+    const t = l.createElement(r) as HTMLScriptElement;
+    t.async = true;
+    t.src = "https://www.clarity.ms/tag/" + i;
+    const y = l.getElementsByTagName(r)[0];
+    y.parentNode!.insertBefore(t, y);
+  })(window, document, "clarity", "script", id);
+  /* eslint-enable */
 }
 
 /** Microsoft Clarity registra sessioni video (schermo, click, scorrimento):
