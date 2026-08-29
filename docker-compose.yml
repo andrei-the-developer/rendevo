@@ -77,6 +77,10 @@ services:
       # la raggiunge invece attraverso il reverse proxy.
       API_INTERNA: http://api:8000
       NEXT_PUBLIC_BASE_URL: https://${DOMINIO}
+      # Vuoto = niente banner cookie e niente Clarity (il componente se ne
+      # accorge, vedi ConsensoCookie.tsx). Va riempito con l'id del progetto
+      # creato su clarity.microsoft.com.
+      CLARITY_ID: ${CLARITY_ID:-}
     depends_on:
       - api
     restart: unless-stopped

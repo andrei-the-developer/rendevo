@@ -14,11 +14,13 @@ DEST=${1:-/var/www/rendevo}
 
 DOMINIO=$(grep -E '^DOMINIO=' "$PROGETTO/.env" | cut -d= -f2-)
 [ -n "$DOMINIO" ] || { echo "manca DOMINIO nel .env" >&2; exit 1; }
+# Vuoto va benissimo: niente banner cookie ne' script, vedi index.html.
+CLARITY_ID=$(grep -E '^CLARITY_ID=' "$PROGETTO/.env" | cut -d= -f2-)
 
 LAVORO=$(mktemp -d); trap 'rm -rf "$LAVORO"' EXIT
 rsync -a --exclude LEGGIMI.md --exclude 'social/' --exclude 'pubblica.sh' \
       "$QUI/" "$LAVORO/"
-sed -i "s|__DOMINIO__|$DOMINIO|g" "$LAVORO/index.html"
+sed -i "s|__DOMINIO__|$DOMINIO|g; s|__CLARITY_ID__|$CLARITY_ID|g" "$LAVORO/index.html"
 
 rsync -a --delete "$LAVORO/" "$DEST/"
 echo "landing pubblicata su $DEST con dominio $DOMINIO"

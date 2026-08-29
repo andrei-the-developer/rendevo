@@ -90,5 +90,11 @@
     "p8": "Questi termini sono regolati dalla legge italiana. Per qualunque controversia è competente il foro del consumatore, dove applicabile, o il foro italiano competente secondo legge.",
     "h9": "9. Contatti",
     "p9": "Per domande su questi termini, o per segnalare un contenuto che ritieni violi i tuoi diritti, contattaci attraverso i canali indicati sul sito di Rendevo."
+  },
+  "Cookie": {
+    "testo": "Usiamo Microsoft Clarity per capire come viene usato il sito (click, scorrimento, registrazioni di sessione anonime) e migliorarlo. Nessun dato viene usato per pubblicità.",
+    "accetta": "Accetta",
+    "rifiuta": "Rifiuta",
+    "dettagli": "Termini e condizioni"
   }
 }

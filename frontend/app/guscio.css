@@ -1170,3 +1170,27 @@ a.tasto-barra { text-decoration: none; display: inline-flex; align-items: center
 .termini-corpo p, .termini-corpo li { color: var(--testo); }
 .termini-corpo ul { padding-left: 1.25rem; }
 .termini-corpo li + li { margin-top: 0.5rem; }
+
+/* --------------------------------------------------------- banner cookie */
+.banner-cookie {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 200;
+  max-width: 40rem;
+  margin: 0 auto;
+  background: #26292b;
+  color: #f2efe9;
+  border-radius: 12px;
+  padding: 1.1rem 1.35rem;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+  font-size: 0.86rem;
+}
+.banner-cookie p { margin: 0; flex: 1 1 18rem; line-height: 1.5; }
+.banner-cookie a { color: inherit; text-decoration: underline; }
+.banner-cookie__azioni { display: flex; gap: 0.5rem; flex: 0 0 auto; }

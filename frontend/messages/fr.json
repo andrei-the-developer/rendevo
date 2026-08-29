@@ -90,5 +90,11 @@
     "p8": "Les présentes conditions sont régies par le droit italien. Pour tout litige, le tribunal compétent en matière de protection des consommateurs sera compétent, le cas échéant, ou à défaut le tribunal italien compétent selon la loi.",
     "h9": "9. Contact",
     "p9": "Pour toute question sur les présentes conditions, ou pour signaler un contenu que vous estimez porter atteinte à vos droits, contactez-nous via les canaux indiqués sur le site de Rendevo."
+  },
+  "Cookie": {
+    "testo": "Nous utilisons Microsoft Clarity pour comprendre comment le site est utilisé (clics, défilement, enregistrements de session anonymes) et l'améliorer. Aucune donnée n'est utilisée à des fins publicitaires.",
+    "accetta": "Accepter",
+    "rifiuta": "Refuser",
+    "dettagli": "Conditions générales"
   }
 }

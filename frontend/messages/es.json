@@ -90,5 +90,11 @@
     "p8": "Estos términos se rigen por la legislación italiana. Para cualquier controversia será competente el fuero de protección al consumidor, cuando resulte aplicable, o en su defecto el tribunal italiano competente según la ley.",
     "h9": "9. Contacto",
     "p9": "Para preguntas sobre estos términos, o para denunciar un contenido que consideres que vulnera tus derechos, contáctanos a través de los canales indicados en el sitio web de Rendevo."
+  },
+  "Cookie": {
+    "testo": "Usamos Microsoft Clarity para entender cómo se usa el sitio (clics, desplazamiento, grabaciones de sesión anónimas) y mejorarlo. Ningún dato se usa con fines publicitarios.",
+    "accetta": "Aceptar",
+    "rifiuta": "Rechazar",
+    "dettagli": "Términos y condiciones"
   }
 }

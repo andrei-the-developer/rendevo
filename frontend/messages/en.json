@@ -90,5 +90,11 @@
     "p8": "These terms are governed by Italian law. Any dispute falls under consumer-protection jurisdiction where applicable, or otherwise the competent Italian court.",
     "h9": "9. Contact",
     "p9": "For questions about these terms, or to report content you believe infringes your rights, contact us through the channels listed on the Rendevo website."
+  },
+  "Cookie": {
+    "testo": "We use Microsoft Clarity to understand how the site is used (clicks, scrolling, anonymous session recordings) and improve it. No data is used for advertising.",
+    "accetta": "Accept",
+    "rifiuta": "Decline",
+    "dettagli": "Terms and conditions"
   }
 }

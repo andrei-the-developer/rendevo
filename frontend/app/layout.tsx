@@ -14,6 +14,7 @@ import {
   Tangerine,
 } from "next/font/google";
 
+import { ConsensoCookie } from "@/componenti/ConsensoCookie";
 import { BASE_PUBBLICA } from "@/lib/api";
 import "./temi.css";
 import "./blocchi.css";
@@ -130,6 +131,12 @@ export default async function RootLayout({
       <body className={variabili}>
         <NextIntlClientProvider locale={locale} messages={messaggi}>
           {children}
+          {/* Letto qui, lato server, e passato come prop: e' l'unico modo per
+              cui un valore d'ambiente arrivi al browser senza che debba
+              essere gia' presente al momento della build (che qui gira
+              senza le variabili del `.env`, solo `docker compose up` le
+              inietta). */}
+          <ConsensoCookie clarityId={process.env.CLARITY_ID ?? ""} />
         </NextIntlClientProvider>
       </body>
     </html>

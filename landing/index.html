@@ -289,6 +289,47 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 .selettore-lingua__elenco button:hover { background: var(--fondo-alt); }
 .selettore-lingua__elenco button[aria-selected="true"] { background: #eef2e4; color: var(--primario); }
 
+/* ---------------------------------------------------------- banner cookie */
+.banner-cookie {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  max-width: 40rem;
+  margin: 0 auto;
+  background: #2c2f22;
+  color: #fffdf7;
+  border-radius: 12px;
+  padding: 1.1rem 1.35rem;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+  font-size: 0.86rem;
+  font-family: var(--ui);
+}
+.banner-cookie[hidden] { display: none; }
+.banner-cookie p { margin: 0; flex: 1 1 18rem; line-height: 1.5; }
+.banner-cookie a { color: inherit; }
+.banner-cookie__azioni { display: flex; gap: 0.5rem; flex: 0 0 auto; }
+.banner-cookie__azioni button {
+  appearance: none;
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  border: 1px solid rgb(255 253 247 / 0.4);
+  background: transparent;
+  color: #fffdf7;
+}
+.banner-cookie__azioni button:hover { background: rgb(255 253 247 / 0.12); }
+.banner-cookie__azioni button.principale { background: var(--ornamento); border-color: var(--ornamento); color: #2c2f22; }
+.banner-cookie__azioni button.principale:hover { filter: brightness(1.08); }
+
 /* Chi ha chiesto meno animazioni non deve vedere il tasto saltare. */
 @media (prefers-reduced-motion: reduce) {
   .tasto { transition: none; }
@@ -408,6 +449,17 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
   </div>
 </footer>
 
+<div class="banner-cookie" id="banner-cookie" hidden>
+  <p>
+    <span id="cookie-testo"></span>
+    <a href="/termini" target="_blank" rel="noopener noreferrer" id="cookie-dettagli"></a>
+  </p>
+  <div class="banner-cookie__azioni">
+    <button type="button" id="cookie-rifiuta"></button>
+    <button type="button" class="principale" id="cookie-accetta"></button>
+  </div>
+</div>
+
 <script>
 /* Traduzione della landing, lato client: questa pagina è HTML statico
    servito da Caddy, fuori dall'app Next.js, quindi non può usare next-intl.
@@ -451,7 +503,11 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
       provaloTitolo: "Provalo adesso",
       provaloTesto: "Lo stiamo ancora costruendo, ed è gratuito. Se ti va di provarlo prima degli altri e dirci cosa non funziona, siamo tutt'orecchi.",
       footerFatto: "Rendevo — fatto in Italia.",
-      footerTermini: "Termini e condizioni"
+      footerTermini: "Termini e condizioni",
+      cookieTesto: "Usiamo Microsoft Clarity per capire come viene usato il sito (click, scorrimento, registrazioni di sessione anonime) e migliorarlo. Nessun dato viene usato per pubblicità.",
+      cookieDettagli: "Termini e condizioni",
+      cookieAccetta: "Accetta",
+      cookieRifiuta: "Rifiuta"
     },
     en: {
       titolo: "Digital invitations for weddings, birthdays and parties",
@@ -480,7 +536,11 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
       provaloTitolo: "Try it now",
       provaloTesto: "We're still building it, and it's free. If you'd like to try it before everyone else and tell us what's not working, we're all ears.",
       footerFatto: "Rendevo — made in Italy.",
-      footerTermini: "Terms and conditions"
+      footerTermini: "Terms and conditions",
+      cookieTesto: "We use Microsoft Clarity to understand how the site is used (clicks, scrolling, anonymous session recordings) and improve it. No data is used for advertising.",
+      cookieDettagli: "Terms and conditions",
+      cookieAccetta: "Accept",
+      cookieRifiuta: "Decline"
     },
     fr: {
       titolo: "Faire-part numériques pour mariages, anniversaires et fêtes",
@@ -509,7 +569,11 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
       provaloTitolo: "Essayez-le maintenant",
       provaloTesto: "Nous sommes encore en train de le construire, et c'est gratuit. Si l'envie vous prend de l'essayer avant tout le monde et de nous dire ce qui ne va pas, on est tout ouïe.",
       footerFatto: "Rendevo — fabriqué en Italie.",
-      footerTermini: "Conditions générales"
+      footerTermini: "Conditions générales",
+      cookieTesto: "Nous utilisons Microsoft Clarity pour comprendre comment le site est utilisé (clics, défilement, enregistrements de session anonymes) et l'améliorer. Aucune donnée n'est utilisée à des fins publicitaires.",
+      cookieDettagli: "Conditions générales",
+      cookieAccetta: "Accepter",
+      cookieRifiuta: "Refuser"
     },
     es: {
       titolo: "Invitaciones digitales para bodas, cumpleaños y fiestas",
@@ -538,7 +602,11 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
       provaloTitolo: "Pruébalo ahora",
       provaloTesto: "Todavía lo estamos construyendo, y es gratuito. Si te apetece probarlo antes que nadie y contarnos qué no funciona, somos todo oídos.",
       footerFatto: "Rendevo — hecho en Italia.",
-      footerTermini: "Términos y condiciones"
+      footerTermini: "Términos y condiciones",
+      cookieTesto: "Usamos Microsoft Clarity para entender cómo se usa el sitio (clics, desplazamiento, grabaciones de sesión anónimas) y mejorarlo. Ningún dato se usa con fines publicitarios.",
+      cookieDettagli: "Términos y condiciones",
+      cookieAccetta: "Aceptar",
+      cookieRifiuta: "Rechazar"
     },
     de: {
       titolo: "Digitale Einladungen für Hochzeiten, Geburtstage und Feiern",
@@ -567,7 +635,11 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
       provaloTitolo: "Jetzt ausprobieren",
       provaloTesto: "Wir bauen noch daran, und es ist kostenlos. Wenn du es vor allen anderen ausprobieren und uns sagen möchtest, was nicht funktioniert, sind wir ganz Ohr.",
       footerFatto: "Rendevo — hergestellt in Italien.",
-      footerTermini: "Allgemeine Geschäftsbedingungen"
+      footerTermini: "Allgemeine Geschäftsbedingungen",
+      cookieTesto: "Wir verwenden Microsoft Clarity, um zu verstehen, wie die Website genutzt wird (Klicks, Scrollen, anonyme Sitzungsaufzeichnungen), und um sie zu verbessern. Es werden keine Daten für Werbung verwendet.",
+      cookieDettagli: "Allgemeine Geschäftsbedingungen",
+      cookieAccetta: "Akzeptieren",
+      cookieRifiuta: "Ablehnen"
     }
   };
 
@@ -602,6 +674,10 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
       var chiaveHtml = conHtml[j].getAttribute("data-i18n-html");
       if (testi[chiaveHtml]) conHtml[j].innerHTML = testi[chiaveHtml];
     }
+    document.getElementById("cookie-testo").textContent = testi.cookieTesto;
+    document.getElementById("cookie-dettagli").textContent = testi.cookieDettagli;
+    document.getElementById("cookie-accetta").textContent = testi.cookieAccetta;
+    document.getElementById("cookie-rifiuta").textContent = testi.cookieRifiuta;
   }
 
   var lingua = leggiCookie("locale");
@@ -650,6 +726,48 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") chiudi();
   });
+
+  // ---------------------------------------------------- banner cookie/Clarity
+  // Stessa chiave di localStorage del componente React nell'app
+  // (ConsensoCookie.tsx): un consenso solo per tutto il sito, non uno per
+  // la landing e uno per l'editor. `__CLARITY_ID__` lo sostituisce
+  // pubblica.sh leggendo CLARITY_ID dal .env — vuoto per default, e allora
+  // qui sotto non parte ne' il banner ne' lo script.
+  var CLARITY_ID = "__CLARITY_ID__";
+  var CHIAVE_CONSENSO = "consenso-clarity";
+
+  function iniettaClarity() {
+    if (document.getElementById("script-clarity")) return;
+    var s = document.createElement("script");
+    s.id = "script-clarity";
+    s.async = true;
+    s.src = "https://www.clarity.ms/tag/" + CLARITY_ID;
+    document.head.appendChild(s);
+  }
+
+  if (CLARITY_ID) {
+    var consenso = null;
+    try { consenso = localStorage.getItem(CHIAVE_CONSENSO); } catch (e) { /* storage bloccato: niente banner */ }
+    if (consenso === "accettato") {
+      iniettaClarity();
+    } else if (consenso !== "rifiutato" && consenso !== null) {
+      // valore imprevisto: si comporta come "non ancora scelto"
+      consenso = null;
+    }
+    if (consenso === null) {
+      var banner = document.getElementById("banner-cookie");
+      banner.hidden = false;
+      document.getElementById("cookie-accetta").addEventListener("click", function () {
+        try { localStorage.setItem(CHIAVE_CONSENSO, "accettato"); } catch (e) {}
+        banner.hidden = true;
+        iniettaClarity();
+      });
+      document.getElementById("cookie-rifiuta").addEventListener("click", function () {
+        try { localStorage.setItem(CHIAVE_CONSENSO, "rifiutato"); } catch (e) {}
+        banner.hidden = true;
+      });
+    }
+  }
 })();
 </script>
 

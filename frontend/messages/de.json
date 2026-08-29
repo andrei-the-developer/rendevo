@@ -90,5 +90,11 @@
     "p8": "Diese Bedingungen unterliegen italienischem Recht. Für Streitigkeiten ist, soweit anwendbar, das Verbrauchergericht zuständig, andernfalls das nach dem Gesetz zuständige italienische Gericht.",
     "h9": "9. Kontakt",
     "p9": "Bei Fragen zu diesen Bedingungen oder um einen Inhalt zu melden, von dem du glaubst, dass er deine Rechte verletzt, kontaktiere uns über die auf der Rendevo-Website angegebenen Kanäle."
+  },
+  "Cookie": {
+    "testo": "Wir verwenden Microsoft Clarity, um zu verstehen, wie die Website genutzt wird (Klicks, Scrollen, anonyme Sitzungsaufzeichnungen), und um sie zu verbessern. Es werden keine Daten für Werbung verwendet.",
+    "accetta": "Akzeptieren",
+    "rifiuta": "Ablehnen",
+    "dettagli": "Allgemeine Geschäftsbedingungen"
   }
 }
