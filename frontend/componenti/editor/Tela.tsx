@@ -351,34 +351,38 @@ export function Tela({
 
         <label className="scelta-tema">
           <span className="scelta-tema__etichetta">Tema</span>
-          <select
-            value={evento.tema}
-            onChange={(e) => {
-              void invia([{ op: "tema", tema: e.target.value }]).catch(() => {});
-            }}
-          >
-            {aspetto.temi.map((voce) => (
-              <option key={voce.id} value={voce.id} title={voce.descrizione}>
-                {voce.etichetta}
-              </option>
-            ))}
-          </select>
+          <span className="scelta-tema__caja">
+            <select
+              value={evento.tema}
+              onChange={(e) => {
+                void invia([{ op: "tema", tema: e.target.value }]).catch(() => {});
+              }}
+            >
+              {aspetto.temi.map((voce) => (
+                <option key={voce.id} value={voce.id} title={voce.descrizione}>
+                  {voce.etichetta}
+                </option>
+              ))}
+            </select>
+          </span>
         </label>
 
         <label className="scelta-tema">
           <span className="scelta-tema__etichetta">Colori</span>
-          <select
-            value={evento.palette}
-            onChange={(e) => {
-              void invia([{ op: "palette", palette: e.target.value }]).catch(() => {});
-            }}
-          >
-            {aspetto.palette.map((voce) => (
-              <option key={voce.id} value={voce.id} title={voce.descrizione}>
-                {voce.etichetta}
-              </option>
-            ))}
-          </select>
+          <span className="scelta-tema__caja">
+            <select
+              value={evento.palette}
+              onChange={(e) => {
+                void invia([{ op: "palette", palette: e.target.value }]).catch(() => {});
+              }}
+            >
+              {aspetto.palette.map((voce) => (
+                <option key={voce.id} value={voce.id} title={voce.descrizione}>
+                  {voce.etichetta}
+                </option>
+              ))}
+            </select>
+          </span>
         </label>
 
         <ScegliCarattere

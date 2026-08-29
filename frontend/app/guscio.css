@@ -501,14 +501,31 @@ label.tasto-popup { display: inline-flex; align-items: center; gap: 0.4rem; }
   text-transform: uppercase;
   opacity: 0.7;
 }
+/* La freccia nativa e` disegnata dal sistema operativo e cambia forma da un
+   browser all'altro — con la freccia disegnata a mano di `.scelta-carattere`
+   proprio qui accanto, la differenza si vedeva. `appearance: none` la toglie,
+   e il `::after` sulla scatola qui sotto la rifa` identica. */
+.scelta-tema__caja { position: relative; display: inline-flex; }
+.scelta-tema__caja::after {
+  content: "▾";
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: #f2efe9;
+  opacity: 0.85;
+  pointer-events: none;
+}
 .scelta-tema select {
+  appearance: none;
   font: inherit;
   font-size: 0.78rem;
   color: #f2efe9;
   background: transparent;
   border: 1px solid rgb(242 239 233 / 0.35);
   border-radius: 999px;
-  padding: 0.45rem 0.9rem;
+  padding: 0.45rem 1.9rem 0.45rem 0.9rem;
   cursor: pointer;
 }
 .scelta-tema select:hover { background: rgb(242 239 233 / 0.14); }
@@ -546,11 +563,6 @@ label.tasto-popup { display: inline-flex; align-items: center; gap: 0.4rem; }
   padding: 2.5rem 1.25rem 5rem;
 }
 .risposte-testata {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 .risposte-testata h1 {
@@ -986,21 +998,24 @@ a.tasto-barra { text-decoration: none; display: inline-flex; align-items: center
    carattere che applica, e `font-family` su <option> Safari e i menu di
    Android la ignorano. Qui l'anteprima e` tutto il punto della scelta. */
 .scelta-carattere { position: relative; display: flex; align-items: center; gap: 0.5rem; }
+/* Stessa pillola di `.scelta-tema select`, qui accanto: prima aveva bordi
+   quadrati ed era l'unico dropdown della barra a spiccare per forma. */
 .scelta-carattere__tasto {
   appearance: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   min-width: 8rem;
-  padding: 0.3rem 0.6rem;
-  background: rgb(242 239 233 / 0.08);
-  border: 1px solid rgb(242 239 233 / 0.25);
-  border-radius: 3px;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  border: 1px solid rgb(242 239 233 / 0.35);
+  border-radius: 999px;
   color: #f2efe9;
   font: inherit;
+  font-size: 0.78rem;
   cursor: pointer;
 }
-.scelta-carattere__tasto:hover { background: rgb(242 239 233 / 0.16); }
+.scelta-carattere__tasto:hover { background: rgb(242 239 233 / 0.14); }
 
 .scelta-carattere__elenco {
   position: absolute;

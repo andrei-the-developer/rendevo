@@ -19,18 +19,6 @@ services:
       retries: 5
     restart: unless-stopped
 
-  redis:
-    image: redis:8-alpine
-    command: redis-server --save 60 1 --appendonly no
-    volumes:
-      - dati_redis:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
   minio:
     image: minio/minio:latest
     command: server /data --console-address ":9001"
@@ -50,7 +38,6 @@ services:
     build: ./backend
     environment:
       INVITI_DATABASE_URL: postgresql+psycopg://inviti:${POSTGRES_PASSWORD}@db:5432/inviti
-      INVITI_REDIS_URL: redis://redis:6379/0
       INVITI_SEGRETO: ${SEGRETO:?serve SEGRETO}
       INVITI_STORAGE: s3
       INVITI_S3_ENDPOINT: http://minio:9000
@@ -69,9 +56,17 @@ services:
       INVITI_STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       INVITI_STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       INVITI_STRIPE_PRICE_ID: ${STRIPE_PRICE_ID:-}
+      # Reset password via Resend (relay SMTP: smtp.resend.com, utente fisso
+      # "resend", password = l'API key). Vuoti finche' non c'e' un dominio
+      # verificato su Resend per il mittente: il codice se ne accorge e non
+      # manda mail, non va in errore (vedi backend/app/config.py).
+      INVITI_SMTP_HOST: ${SMTP_HOST:-}
+      INVITI_SMTP_PORTA: ${SMTP_PORTA:-587}
+      INVITI_SMTP_UTENTE: ${SMTP_UTENTE:-}
+      INVITI_SMTP_PASSWORD: ${RESEND_API_KEY:-}
+      INVITI_SMTP_MITTENTE: ${SMTP_MITTENTE:-}
     depends_on:
       db: { condition: service_healthy }
-      redis: { condition: service_healthy }
       minio: { condition: service_healthy }
     restart: unless-stopped
 
@@ -102,7 +97,6 @@ services:
 
 volumes:
   dati_db:
-  dati_redis:
   dati_minio:
   dati_caddy:
   config_caddy:

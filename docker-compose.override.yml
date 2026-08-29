@@ -25,7 +25,6 @@ services:
       INVITI_STORAGE: locale
     depends_on: !override
       db: { condition: service_healthy }
-      redis: { condition: service_healthy }
     ports:
       # 8001 e non 8000: il progetto inviti-v2 gira sulla stessa macchina e
       # tiene la 8000. Sono due stack indipendenti, non due repliche.

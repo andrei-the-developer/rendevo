@@ -12,7 +12,6 @@ class Impostazioni(BaseSettings):
     )
 
     database_url: str = "postgresql+psycopg://inviti:inviti_dev@127.0.0.1:5432/inviti"
-    redis_url: str = "redis://127.0.0.1:6379/0"
 
     # Firma dei cookie di sessione. In produzione va passata dall'ambiente:
     # cambiarla invalida tutte le sessioni anonime, e con esse la proprietà
