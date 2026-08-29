@@ -124,6 +124,17 @@ export function Autenticazione({
                 "Scrivi l'indirizzo con cui ti sei registrato: ti mandiamo un link per sceglierne una nuova."}
             </p>
 
+            {modo === "registrati" && (
+              <p className="auth-nota" style={{ fontSize: "0.78rem" }}>
+                Creando l&apos;account accetti i{" "}
+                <a href="/termini" target="_blank" rel="noopener noreferrer">
+                  termini e condizioni
+                </a>{" "}
+                di Rendevo — anche la parte sui diritti d&apos;autore se aggiungi
+                musica al tuo invito.
+              </p>
+            )}
+
             <label className="campo-popup">
               <span>Email</span>
               <input

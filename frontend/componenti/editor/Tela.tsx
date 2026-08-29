@@ -10,6 +10,7 @@ import type { Aspetto, Blocco, Evento, Operazione, TipoBlocco, Utente } from "@/
 import { AggiungiSezione } from "./AggiungiSezione";
 import { ScegliCarattere } from "./ScegliCarattere";
 import { ScegliFiore } from "./ScegliFiore";
+import { SceltaInvito } from "./SceltaInvito";
 import { Autenticazione } from "./Autenticazione";
 import { Popup } from "./Popup";
 
@@ -67,6 +68,7 @@ export function Tela({
   utenteIniziale: Utente | null;
 }) {
   const [evento, setEvento] = useState(iniziale);
+  const [titolo, setTitolo] = useState(iniziale.titolo);
   const [apertoId, setApertoId] = useState<string | null>(null);
   const [stato, setStato] = useState<Stato>("pronto");
   const [messaggio, setMessaggio] = useState<string | null>(null);
@@ -106,6 +108,19 @@ export function Tela({
     },
     [evento.id, evento.versione],
   );
+
+  /** Il nome con cui l'organizzatore riconosce l'invito nel proprio elenco:
+   *  si salva solo quando si esce dal campo, non a ogni tasto, per non
+   *  scrivere un'operazione a lettera. */
+  async function salvaTitolo() {
+    const pulito = titolo.trim();
+    if (pulito === evento.titolo) return;
+    try {
+      await invia([{ op: "titolo", titolo: pulito }]);
+    } catch {
+      // `invia` ha gia` messo l'errore in `messaggio`.
+    }
+  }
 
   /** Stessa cornice per ogni blocco, busta compresa: click sinistro o
    *  destro apre lo stesso popup — non c'è più una modalità di sola
@@ -348,6 +363,23 @@ export function Tela({
           {stato === "pronto" && `v${evento.versione}`}
           {stato === "errore" && "Errore"}
         </span>
+
+        <label className="rinomina-invito">
+          <span className="scelta-tema__etichetta">Nome</span>
+          <input
+            value={titolo}
+            placeholder="Invito senza nome"
+            aria-label="Nome dell'invito, solo per te"
+            title="Il nome con cui lo riconosci nel tuo elenco: non lo vede l'invitato"
+            onChange={(e) => setTitolo(e.target.value)}
+            onBlur={() => void salvaTitolo()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.currentTarget.blur();
+            }}
+          />
+        </label>
+
+        {utente && <SceltaInvito correnteId={evento.id} />}
 
         <label className="scelta-tema">
           <span className="scelta-tema__etichetta">Tema</span>

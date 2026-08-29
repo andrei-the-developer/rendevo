@@ -33,5 +33,15 @@ export default async function PaginaEditor(props: PageProps<"/e/[id]">) {
     aspetto(),
     chiSono(),
   ]);
-  return <Tela iniziale={evento} aspetto={registri} utenteIniziale={sessione.utente} />;
+  // `key`: senza, passare da un invito all'altro (il selettore "I miei
+  // inviti") non farebbe ripartire lo stato interno della Tela — stessa
+  // posizione nell'albero, React riuserebbe l'istanza col vecchio evento.
+  return (
+    <Tela
+      key={evento.id}
+      iniziale={evento}
+      aspetto={registri}
+      utenteIniziale={sessione.utente}
+    />
+  );
 }

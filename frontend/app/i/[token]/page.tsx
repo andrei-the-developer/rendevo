@@ -6,9 +6,14 @@ import { ListaBlocchi } from "@/componenti/blocchi/ListaBlocchi";
 import { Sipario } from "@/componenti/blocchi/Sipario";
 import { ErroreApi } from "@/lib/api";
 import { invitoPubblico } from "@/lib/api-server";
-import { traduci } from "@/lib/invito-tradotto";
 import { CODICE_HTML, type Lingua } from "@/lib/lingue";
 import type { Evento, Hero } from "@/lib/tipi";
+
+// Rendevo non ha (ancora) un modo per l'invitato di scegliere la lingua
+// dell'invito: era una proprieta' dell'indirizzo (/ro, /gr, /es) su un solo
+// evento hardcoded, debito ereditato dal progetto originale. Qui resta fissa
+// su "it" finche' non torna una vera funzione multi-lingua per-invito.
+const LINGUA_FISSA: Lingua = "it";
 
 /** Il crawler di WhatsApp non esegue JavaScript: questi dati devono essere
  *  già nell'HTML della prima risposta, ed è per questo che la pagina è
@@ -41,24 +46,18 @@ export async function generateMetadata(
     return { title: "Link non più valido", robots: { index: false } };
   }
 
-  // Caddy riscrive alcuni indirizzi pubblici su questo percorso e dice quale
-  // era e in che lingua: `og:url` riporta l'indirizzo che la gente ha davvero
-  // in mano invece del percorso col token, e il titolo esce tradotto.
+  // Caddy puo' riscrivere un indirizzo pubblico piu' corto su questo
+  // percorso col token: se lo fa, dice anche qual era in questo header, cosi'
+  // `og:url` riporta l'indirizzo che la gente ha davvero in mano.
   const intestazioni = await headers();
   const pubblico = intestazioni.get("x-invito-percorso");
-  const lingua: Lingua = (intestazioni.get("x-invito-lingua") as Lingua) || "it";
+  const lingua = LINGUA_FISSA;
 
-  const { titolo } = riassunto(traduci(evento, lingua));
+  const { titolo } = riassunto(evento);
   // Niente data nell'anteprima: nella riga di WhatsApp c'e' spazio per poco,
   // e "17 ottobre 2026." se lo mangiava tutto senza dire niente che l'invito
   // non dica meglio da solo.
-  // Anche l'anteprima in chat parla la lingua del link.
-  const descrizione = {
-    it: "Facci sapere se ci sarai.",
-    ro: "Spune-ne dacă vei fi acolo.",
-    el: "Πες μας αν θα είσαι εκεί.",
-    es: "Dinos si estarás.",
-  }[lingua];
+  const descrizione = "Facci sapere se ci sarai.";
 
   return {
     title: titolo,
@@ -70,7 +69,7 @@ export async function generateMetadata(
       description: descrizione,
       url: pubblico || `/i/${token}`,
       type: "website",
-      locale: { it: "it_IT", ro: "ro_RO", el: "el_GR", es: "es_ES" }[lingua],
+      locale: "it_IT",
       // La busta col sigillo, sempre — non la foto di copertina dell'invito.
       //
       // Tre motivi. Chi non ha caricato nessuna foto restava senza immagine e
@@ -102,10 +101,7 @@ export default async function PaginaInvito(props: PageProps<"/i/[token]">) {
   // dell'indirizzo, non dell'invito: lo stesso invito ha due link.
   const intestazioni = await headers();
   const senzaAccompagnatori = intestazioni.get("x-invito-semplice") === "1";
-  // La lingua e` una proprieta` dell'indirizzo, non dell'invito: /ro, /gr e
-  // /es sono lo stesso invito, tradotto solo nel rendering. Il database non
-  // sa niente di tutto questo, e le risposte finiscono nello stesso mucchio.
-  const lingua: Lingua = (intestazioni.get("x-invito-lingua") as Lingua) || "it";
+  const lingua = LINGUA_FISSA;
 
   if (evento === "scaduto") {
     return (
@@ -121,24 +117,22 @@ export default async function PaginaInvito(props: PageProps<"/i/[token]">) {
     );
   }
 
-  // Tradotto solo qui: sopra `evento` poteva ancora essere "scaduto".
-  const tradotto = traduci(evento, lingua);
-  const busta = tradotto.blocchi.find((b) => b.tipo === "busta") ?? null;
-  const hero = tradotto.blocchi.find((b) => b.tipo === "hero")?.contenuto as
+  const busta = evento.blocchi.find((b) => b.tipo === "busta") ?? null;
+  const hero = evento.blocchi.find((b) => b.tipo === "hero")?.contenuto as
     | Hero
     | undefined;
 
   return (
     <div
-      data-tema={tradotto.tema}
-      data-palette={tradotto.palette}
-      data-carattere={tradotto.carattere}
+      data-tema={evento.tema}
+      data-palette={evento.palette}
+      data-carattere={evento.carattere}
       data-lingua={lingua}
       lang={CODICE_HTML[lingua]}
     >
       <Sipario busta={busta} titoloFallback={hero?.titolo} lingua={lingua}>
         <ListaBlocchi
-          evento={tradotto}
+          evento={evento}
           token={token}
           senzaAccompagnatori={senzaAccompagnatori}
           lingua={lingua}

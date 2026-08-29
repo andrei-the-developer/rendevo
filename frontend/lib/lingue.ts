@@ -1,15 +1,11 @@
 /**
- * Le lingue dell'invito.
- *
- * Serve un invito solo, tradotto: le risposte devono finire tutte nello stesso
- * mucchio, qualunque link abbia usato l'invitato. Per questo qui non c'e'
- * niente che tocchi il backend — la lingua e' una proprieta' dell'**indirizzo**
- * da cui si arriva (`/ro`, `/gr`, `/es`), la sceglie Caddy con
- * un'intestazione, e vive solo nel rendering.
- *
- * Il contenuto dell'invito (i testi degli sposi) sta in `invito-tradotto.ts`.
- * Qui ci sono solo le parole dell'interfaccia — quelle scritte dentro i
- * componenti, che nessuno puo' modificare dall'editor.
+ * Le lingue dell'invito pubblico (lato invitato): le parole scritte dentro i
+ * componenti (bottoni RSVP, conto alla rovescia, date), non il contenuto che
+ * l'organizzatore scrive nell'editor. Oggi chi crea un invito su Rendevo lo
+ * scrive solo in italiano, quindi tutto qui risolve sempre su "it" — resta
+ * pronto per quando un invito potra' avere una sua lingua scelta
+ * dall'organizzatore, indipendente dalla lingua dell'interfaccia (vedi
+ * frontend/messages/ per quella).
  */
 
 export const LINGUE = ["it", "ro", "el", "es"] as const;
@@ -23,16 +19,6 @@ export const CODICE_HTML: Record<Lingua, string> = {
   ro: "ro",
   el: "el",
   es: "es",
-};
-
-/** Percorso pubblico -> lingua. Lo usa Caddy, ed e` scritto qui per avere un
- *  posto solo dove leggere la corrispondenza. */
-export const PERCORSI: Record<string, Lingua> = {
-  "/": "it",
-  "/invito": "it",
-  "/ro": "ro",
-  "/gr": "el",
-  "/es": "es",
 };
 
 interface Dizionario {

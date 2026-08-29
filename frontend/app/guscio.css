@@ -1048,6 +1048,40 @@ a.tasto-barra { text-decoration: none; display: inline-flex; align-items: center
 .scelta-carattere__elenco button:hover { background: #f2efe9; }
 .scelta-carattere__elenco button[aria-selected="true"] { background: #eef2e4; color: #4d6122; }
 
+/* ------------------------------------------------------- elenco inviti */
+.scelta-invito__stato { padding: 0.45rem 0.6rem; color: #7a7f82; font-size: 0.8rem; }
+.scelta-invito__separatore { height: 1px; margin: 0.3rem 0.2rem; background: #e4e0d8; }
+
+/* Il nome dell'invito, rinominabile sul posto: un campo di testo che si
+   comporta da etichetta finche' non lo si tocca. */
+.rinomina-invito {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.rinomina-invito input {
+  appearance: none;
+  font: inherit;
+  font-size: 0.78rem;
+  color: #f2efe9;
+  background: transparent;
+  /* Un bordo appena accennato anche a riposo, non del tutto trasparente:
+     sul touch non esiste `:hover` che lo riveli, e senza questo il campo
+     sembrava testo normale, non qualcosa su cui si può toccare. */
+  border: 1px solid rgb(242 239 233 / 0.16);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  min-width: 8rem;
+  max-width: 16rem;
+}
+.rinomina-invito input:hover { border-color: rgb(242 239 233 / 0.35); }
+.rinomina-invito input:focus {
+  outline: 0;
+  border-color: rgb(242 239 233 / 0.6);
+  background: rgb(242 239 233 / 0.08);
+}
+.rinomina-invito input::placeholder { color: rgb(242 239 233 / 0.55); }
+
 /* L'anteprima vera e propria. I corsivi hanno l'occhio molto piu` piccolo:
    senza la scala qui sotto, nell'elenco sembrerebbero illeggibili accanto ai
    serif — ed e` proprio il confronto che l'utente sta facendo. */
@@ -1112,3 +1146,27 @@ a.tasto-barra { text-decoration: none; display: inline-flex; align-items: center
 .tasto-altezza__prova[data-altezza="alto"] i { top: 0.25rem; }
 .tasto-altezza__prova[data-altezza="meta"] i { top: 50%; translate: 0 -50%; }
 .tasto-altezza__prova[data-altezza="basso"] i { bottom: 0.25rem; }
+
+/* ---------------------------------------------------------------- termini */
+.pagina-termini { padding: 3rem 1.25rem 5rem; background: var(--fondo); }
+.termini-corpo {
+  max-width: 42rem;
+  margin: 0 auto;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  color: var(--testo);
+  line-height: 1.6;
+}
+.termini-corpo h1 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 5vw, 2.5rem);
+  margin: 0 0 0.35rem;
+}
+.termini-agg { color: var(--testo-tenue); font-size: 0.85rem; margin: 0 0 2rem; }
+.termini-corpo h2 {
+  font-size: 1.05rem;
+  margin: 2rem 0 0.5rem;
+}
+.termini-corpo p, .termini-corpo li { color: var(--testo); }
+.termini-corpo ul { padding-left: 1.25rem; }
+.termini-corpo li + li { margin-top: 0.5rem; }

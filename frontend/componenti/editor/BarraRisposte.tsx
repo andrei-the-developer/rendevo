@@ -6,6 +6,7 @@ import { useState } from "react";
 import { esci } from "@/lib/api-client";
 import type { Utente } from "@/lib/tipi";
 import { Autenticazione } from "./Autenticazione";
+import { SceltaInvito } from "./SceltaInvito";
 
 /** La stessa barra scura dell'editor, ridotta a quello che serve qui: si
  *  torna all'invito e si vede chi ha fatto login. Senza, questa pagina era
@@ -36,6 +37,8 @@ export function BarraRisposte({
       <Link href={`/e/${eventoId}`} className="tasto-barra">
         Torna all&apos;invito
       </Link>
+
+      {utente && <SceltaInvito correnteId={eventoId} />}
 
       <span className="barra-editor__spazio" />
 

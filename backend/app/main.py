@@ -119,6 +119,7 @@ def _evento_json(
     return {
         "id": str(evento.id),
         "tipo": evento.tipo,
+        "titolo": evento.titolo_interno,
         "tema": evento.tema,
         "palette": evento.palette,
         "carattere": evento.carattere,

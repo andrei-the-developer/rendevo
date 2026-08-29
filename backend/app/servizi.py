@@ -262,6 +262,14 @@ def _carattere(db: Session, evento: Evento, op: dict) -> None:
     evento.carattere = canonico
 
 
+def _titolo(db: Session, evento: Evento, op: dict) -> None:
+    # E' il nome con cui l'organizzatore riconosce l'invito nel proprio
+    # elenco quando ne ha piu' di uno: non ha niente a che fare col titolo
+    # scritto nel blocco "hero", che l'invitato vede.
+    titolo = str(op.get("titolo") or "").strip()[:160]
+    evento.titolo_interno = titolo
+
+
 AZIONI = {
     "aggiorna": _aggiorna,
     "sposta": _sposta,
@@ -272,6 +280,7 @@ AZIONI = {
     "tema": _tema,
     "palette": _palette,
     "carattere": _carattere,
+    "titolo": _titolo,
 }
 
 

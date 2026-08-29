@@ -147,6 +147,9 @@ export interface DatiAsset {
 export interface Evento {
   id: string;
   tipo: string;
+  /** Il nome con cui l'organizzatore riconosce l'invito nel proprio elenco,
+   *  non il titolo scritto nel blocco "hero" che vede l'invitato. */
+  titolo: string;
   tema: string;
   palette: string;
   carattere: string;
@@ -208,7 +211,18 @@ export type Operazione =
   | { op: "visibilita"; blocco: string; visibile: boolean }
   | { op: "tema"; tema: string }
   | { op: "palette"; palette: string }
-  | { op: "carattere"; carattere: string };
+  | { op: "carattere"; carattere: string }
+  | { op: "titolo"; titolo: string };
+
+// GET /api/eventi — l'elenco dei propri inviti, per il selettore.
+export interface VoceEvento {
+  id: string;
+  tipo: string;
+  titolo: string;
+  tema: string;
+  palette: string;
+  aggiornato_il: string;
+}
 
 // GET /api/eventi/{id}/risposte
 export interface Risposta {

@@ -229,6 +229,8 @@ footer {
   font-size: 0.85rem;
   color: var(--testo-tenue);
 }
+footer a { color: inherit; }
+footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
 
 /* Chi ha chiesto meno animazioni non deve vedere il tasto saltare. */
 @media (prefers-reduced-motion: reduce) {
@@ -334,7 +336,11 @@ footer {
 </main>
 
 <footer>
-  <div class="gabbia">Rendevo — fatto in Italia.</div>
+  <div class="gabbia">
+    Rendevo — fatto in Italia.
+    <span class="separatore">·</span>
+    <a href="/termini">Termini e condizioni</a>
+  </div>
 </footer>
 
 </body>
