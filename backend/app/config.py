@@ -46,7 +46,9 @@ class Impostazioni(BaseSettings):
     # L'indirizzo pubblico del sito, usato per costruire i link dentro le
     # email. Deve essere quello che l'utente vede nel browser, non un
     # indirizzo interno: e' un link su cui deve poter cliccare.
-    base_pubblica: str = "https://rendevo.eu"
+    # Ripiego per lo sviluppo: in produzione arriva da INVITI_BASE_PUBBLICA,
+    # che docker-compose costruisce dal DOMINIO nel .env.
+    base_pubblica: str = "http://localhost:3000"
 
     # SMTP. Vuoti = nessuna email parte (il codice se ne accorge e lo scrive
     # nel registro, senza rompere niente). Vanno scritti nel .env, mai qui.

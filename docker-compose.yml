@@ -57,6 +57,10 @@ services:
       INVITI_S3_ACCESS_KEY: ${MINIO_USER}
       INVITI_S3_SECRET_KEY: ${MINIO_PASSWORD}
       INVITI_ORIGINI_CORS: '["https://${DOMINIO:?serve DOMINIO}"]'
+      # L'indirizzo pubblico viene da DOMINIO come tutto il resto: cosi' il
+      # valore scritto in config.py resta solo un ripiego per lo sviluppo, e
+      # cambiare dominio e' una riga sola nel .env.
+      INVITI_BASE_PUBBLICA: https://${DOMINIO}
       # Non richieste con `:?`: a differenza di SEGRETO/DOMINIO, l'app deve
       # continuare a funzionare (editor, RSVP, tutto il resto) anche senza
       # Stripe configurato. Mancanti = solo /api/eventi/{id}/pagamento e
