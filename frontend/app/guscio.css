@@ -1,0 +1,1099 @@
+/* Cornice dell'applicazione: home, editor, tasto musica. Volutamente separata
+   da blocchi.css — questi stili non entrano mai nell'invito. */
+
+/* ---------------------------------------------------------- tasto musica */
+
+.tasto-musica {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.35);
+  font-family: var(--ui);
+  color: var(--testo);
+}
+.etichetta-musica {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.onde { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+.onde i {
+  width: 2px;
+  height: 4px;
+  background: var(--primario);
+  border-radius: 1px;
+  animation: onda 900ms ease-in-out infinite;
+}
+.onde i:nth-child(2) { animation-delay: 150ms; }
+.onde i:nth-child(3) { animation-delay: 300ms; }
+.tasto-musica[aria-pressed="false"] .onde i {
+  animation-play-state: paused;
+  height: 4px;
+  opacity: 0.4;
+}
+@keyframes onda { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+
+/* Il tasto è fisso: lasciamo respiro in fondo alla pagina. */
+.coda { height: 5.5rem; }
+
+@media (max-width: 30rem) {
+  .etichetta-musica { display: none; }
+  .tasto-musica { padding: 0.8rem; }
+}
+
+/* ------------------------------------------------------------------ home */
+
+.pagina-app {
+  --fondo: #f7f6f3;
+  --fondo-alt: #efece6;
+  --carta: #ffffff;
+  --testo: #26292b;
+  --testo-tenue: #666b6e;
+  --bordo: #ddd9d1;
+  --primario: #3f5551;
+  --primario-chiaro: #6d8b85;
+  --accento: #a9762f;
+  --su-primario: #ffffff;
+  --display: var(--font-cormorant), Georgia, serif;
+  --ui: var(--font-jost), system-ui, sans-serif;
+  --peso-display: 400;
+  --tracking-etichetta: 0.24em;
+  --raggio: 2px;
+
+  min-height: 100svh;
+  background: var(--fondo);
+  color: var(--testo);
+  font-family: var(--ui);
+}
+
+.app-contenuto {
+  max-width: 54rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 8vw, 5rem) clamp(1.25rem, 5vw, 2.5rem) 5rem;
+}
+/* Il breve passaggio sulla home, prima del redirect nell'editor. */
+.app-contenuto--centrato {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding-bottom: clamp(2.5rem, 8vw, 5rem);
+}
+
+.app-titolo {
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1.1;
+  margin: 0 0 0.6rem;
+  text-wrap: balance;
+}
+.app-sommario { color: var(--testo-tenue); margin: 0 0 2.5rem; max-width: 34rem; }
+
+.scelta-modelli {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+.carta-modello {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  padding: 1.5rem;
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  cursor: pointer;
+  font-family: var(--ui);
+  color: inherit;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+.carta-modello:hover { border-color: var(--primario-chiaro); transform: translateY(-2px); }
+.carta-modello:disabled { opacity: 0.5; cursor: default; transform: none; }
+.carta-modello b {
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  font-size: 1.45rem;
+}
+.carta-modello span {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+
+.nota-app {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--bordo);
+  font-size: 0.875rem;
+  color: var(--testo-tenue);
+}
+
+/* ---------------------------------------------------------------- editor */
+
+.barra-editor {
+  position: sticky;
+  top: 0;
+  /* Sopra ai blocchi del contenuto: il popup (100) resta comunque sopra
+     a tutto, compresa questa barra. */
+  z-index: 90;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.7rem clamp(0.75rem, 3vw, 1.5rem);
+  background: #1d2321;
+  color: #f2efe9;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 0.8rem;
+}
+.barra-editor__stato {
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.barra-editor__spazio { margin-left: auto; }
+
+.suggerimento-editor {
+  margin: 0;
+  padding: 0.6rem 1rem;
+  background: #f7f6f3;
+  color: #666b6e;
+  font-size: 0.8rem;
+  text-align: center;
+  font-family: var(--font-jost), sans-serif;
+}
+
+.tasto-barra {
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f2efe9;
+  background: transparent;
+  border: 1px solid rgb(242 239 233 / 0.35);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+}
+.tasto-barra:hover { background: rgb(242 239 233 / 0.14); }
+.tasto-barra[aria-pressed="true"] { background: #f2efe9; color: #1d2321; border-color: #f2efe9; }
+.tasto-barra:disabled { opacity: 0.45; cursor: default; }
+
+/* Contorni solo in modalità modifica: in lettura la pagina è identica
+   all'invito che vedrà l'ospite. */
+.tela--modifica .blocco-modificabile {
+  position: relative;
+  /* `pointer` e non `context-menu`: quest'ultimo disegna la freccia col
+     menu a fianco — i tre puntini — che sembra un avviso, non un invito a
+     cliccare. Qui un clic qualsiasi apre la modifica, quindi la manina dice
+     la verita' ed e' anche il gesto che la gente prova per primo. */
+  cursor: pointer;
+  /* Un blocco che non rende nulla in linea — la musica è solo un tasto fisso —
+     collasserebbe a zero e diventerebbe impossibile da cliccare. */
+  min-height: 2.75rem;
+}
+.tela--modifica .blocco-modificabile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px dashed transparent;
+  pointer-events: none;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.tela--modifica .blocco-modificabile:hover::after {
+  border-color: var(--primario-chiaro, #6d8b85);
+  background: rgb(109 139 133 / 0.06);
+}
+.tela--modifica .blocco-modificabile[data-nascosto="true"] { opacity: 0.45; }
+
+/* Sempre visibile in modifica: mostra la struttura dell'invito, e serve da
+   bersaglio ai blocchi che in linea non disegnano niente. */
+.targa-blocco {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  background: #1d2321;
+  color: #f2efe9;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.35;
+  transition: opacity 150ms ease;
+}
+.tela--modifica .blocco-modificabile:hover > .targa-blocco { opacity: 1; }
+
+/* ----------------------------------------------------------------- popup */
+
+.velo-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgb(20 24 22 / 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.popup {
+  width: min(34rem, 100%);
+  max-height: 85svh;
+  overflow-y: auto;
+  background: #fffdf9;
+  color: #26292b;
+  border-radius: 6px;
+  box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.5);
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 0.95rem;
+}
+.popup__testata {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 1.1rem 1.35rem;
+  border-bottom: 1px solid #e2ded6;
+}
+.popup__testata h2 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+  font-size: 1.35rem;
+  margin: 0;
+}
+.popup__tipo {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a7f82;
+}
+.popup__chiudi {
+  margin-left: auto;
+  font: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+  background: none;
+  border: 0;
+  color: #7a7f82;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+.popup__corpo { padding: 1.35rem; display: grid; gap: 1rem; }
+.popup__azioni {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.1rem 1.35rem;
+  border-top: 1px solid #e2ded6;
+  background: #f7f6f3;
+}
+.popup__azioni .a-destra { margin-left: auto; }
+
+.campo-popup { display: grid; gap: 0.35rem; }
+.campo-popup > span {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #7a7f82;
+}
+.campo-popup input[type="text"],
+.campo-popup input[type="date"],
+.campo-popup input[type="time"],
+.campo-popup input[type="url"],
+.campo-popup input[type="email"],
+.campo-popup input[type="password"],
+.campo-popup textarea,
+.campo-popup select {
+  font: inherit;
+  color: #26292b;
+  background: #fff;
+  border: 1px solid #ddd9d1;
+  border-radius: 3px;
+  padding: 0.6rem 0.75rem;
+  width: 100%;
+  resize: vertical;
+}
+.campo-popup input:focus, .campo-popup textarea:focus, .campo-popup select:focus {
+  outline: 0;
+  border-color: #6d8b85;
+  box-shadow: 0 0 0 3px rgb(109 139 133 / 0.2);
+}
+.campo-popup label.riga { display: flex; align-items: center; gap: 0.5rem; }
+
+.tasto-popup {
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  border: 1px solid #ddd9d1;
+  background: #fff;
+  color: #26292b;
+}
+.tasto-popup:hover { border-color: #6d8b85; }
+.tasto-popup--primario { background: #3f5551; border-color: #3f5551; color: #fff; }
+.tasto-popup--primario:hover { background: #26292b; border-color: #26292b; }
+.tasto-popup--rosso { color: #a8524a; border-color: #e3c9c5; }
+.tasto-popup--rosso:hover { background: #a8524a; color: #fff; border-color: #a8524a; }
+.tasto-popup:disabled { opacity: 0.5; cursor: default; }
+/* Un <label> con l'input file dentro si stila come un bottone: attiva lo
+   stesso "Carica" col mouse o con la tastiera, senza JS per aprirlo. */
+label.tasto-popup { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+/* --------------------------------------------------- upload di una foto */
+
+.campo-foto { display: flex; align-items: center; gap: 0.85rem; }
+.campo-foto__anteprima {
+  flex: 0 0 auto;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f2efe9;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ddd9d1;
+}
+.campo-foto__anteprima img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.campo-foto__vuota {
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9a9d94;
+  text-align: center;
+  padding: 0 0.35rem;
+}
+
+/* ------------------------------------------------------ griglia galleria */
+
+.griglia-foto-popup {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+.scheda-foto-popup {
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+.scheda-foto-popup img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd9d1;
+  display: block;
+}
+.scheda-foto-popup input[type="text"] {
+  font: inherit;
+  font-size: 0.78rem;
+  color: #26292b;
+  background: #fff;
+  border: 1px solid #ddd9d1;
+  border-radius: 3px;
+  padding: 0.35rem 0.5rem;
+  width: 100%;
+}
+.scheda-foto-popup__rimuovi {
+  font: inherit;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a8524a;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  justify-self: start;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.scheda-foto-popup__rimuovi:hover { color: #7d3b35; }
+
+/* ------------------------------------------------------- login e account */
+
+.popup--auth { width: min(24rem, 100%); }
+.auth-nota {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #666b6e;
+  background: #f7f6f3;
+  border-radius: 3px;
+  padding: 0.65rem 0.85rem;
+}
+
+/* L'email dell'utente accanto al tasto Esci, sul lato destro della barra. */
+.barra-editor__utente {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  color: #cfd3ce;
+  max-width: 14rem;
+}
+.barra-editor__email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.errore-popup {
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  background: #fbf0ee;
+  border-left: 3px solid #a8524a;
+  color: #7d3b35;
+  font-size: 0.875rem;
+}
+
+/* -------------------------------------------------------- pagina d'errore */
+
+.pagina-errore {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  text-align: center;
+  background: #f7f6f3;
+  color: #26292b;
+  font-family: var(--font-jost), system-ui, sans-serif;
+}
+.pagina-errore h1 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 6vw, 2.75rem);
+  margin: 0 0 0.75rem;
+}
+.pagina-errore p { color: #666b6e; max-width: 28rem; margin: 0 auto; }
+
+/* ------------------------------------------------------ selettore di tema */
+
+/* Il tema riguarda l'invito intero, non un blocco: sta nella barra, non nel
+   popup del click destro. */
+.scelta-tema { display: flex; align-items: center; gap: 0.5rem; }
+.scelta-tema__etichetta {
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.scelta-tema select {
+  font: inherit;
+  font-size: 0.78rem;
+  color: #f2efe9;
+  background: transparent;
+  border: 1px solid rgb(242 239 233 / 0.35);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+.scelta-tema select:hover { background: rgb(242 239 233 / 0.14); }
+/* Il menu aperto è disegnato dal sistema operativo: lì serve un fondo chiaro,
+   altrimenti su alcune piattaforme il testo esce bianco su bianco. */
+.scelta-tema option { color: #26292b; background: #fffdf9; }
+
+/* Il pulsante che conta: "Copia link invito" e` l'azione finale dell'editor
+   (dal 2026-08-24 e` anche l'unica che porta un invito fuori di qui, visto che
+   il pagamento non esiste piu`). Sta in mezzo a pulsanti tutti uguali: senza un
+   riempimento pieno si perde e l'utente non trova come mandare l'invito. */
+.tasto-barra--principale {
+  background: #f2efe9;
+  color: #1d2321;
+  border-color: #f2efe9;
+}
+.tasto-barra--principale:hover { background: #fff; border-color: #fff; }
+
+.barra-editor__etichetta-link {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+/* ------------------------------------------------------- pagina risposte */
+/* La schermata da cui si leggono le conferme. Vive nella cornice CHIARA
+   dell'applicazione (`.pagina-app`), non nell'invito e non nella barra scura:
+   scritta com'era prima — testo chiaro senza sfondo — risultava illeggibile,
+   perche' il fondo dell'app e' avorio. */
+
+.pagina-risposte {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem;
+}
+.risposte-testata {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.risposte-testata h1 {
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  margin: 0;
+  color: var(--testo);
+}
+.risposte-sottotitolo {
+  margin: 0.2rem 0 0;
+  color: var(--testo-tenue);
+  font-size: 0.95rem;
+}
+/* Il "torna all'invito" qui e` su fondo chiaro: il .tasto-barra e` pensato
+   per la barra scura e sparirebbe. */
+.tasto-ritorno {
+  border: 1px solid var(--bordo);
+  background: var(--carta);
+  color: var(--testo);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tasto-ritorno:hover { background: var(--fondo-alt); }
+
+.riepilogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+.conteggio {
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+}
+.conteggio strong {
+  display: block;
+  font-family: var(--display);
+  font-size: 2.1rem;
+  font-weight: var(--peso-display);
+  line-height: 1;
+  color: var(--testo);
+}
+.conteggio span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+/* Il numero che si viene a cercare: le teste a tavola. */
+.conteggio--forte {
+  background: #eef2e4;
+  border-color: #c6d0ab;
+}
+.conteggio--forte strong { color: #46551f; }
+.conteggio--forte span { color: #5d6b3a; }
+
+.risposte-vuoto {
+  background: var(--carta);
+  border: 1px dashed var(--bordo);
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--testo-tenue);
+}
+
+.elenco-risposte { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.risposta {
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-left: 4px solid #b9bfae;
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  color: var(--testo);
+}
+/* Un colpo d'occhio deve bastare a separare chi viene da chi no. */
+.risposta[data-presente="true"] { border-left-color: #6d8140; }
+.risposta[data-presente="false"] { border-left-color: #b07a70; background: var(--fondo-alt); }
+
+.risposta__capo { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
+.risposta__nome { font-size: 1.05rem; }
+.risposta__esito {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.risposta[data-presente="true"] .risposta__esito { color: #4d6122; }
+.risposta[data-presente="false"] .risposta__esito { color: #96564a; }
+.risposta__quando { margin-left: auto; font-size: 0.8rem; color: var(--testo-tenue); }
+
+.risposta p { margin: 0.55rem 0 0; font-size: 0.92rem; color: var(--testo); }
+.etichetta-riga { color: var(--testo-tenue); }
+.risposta__messaggio { font-style: italic; color: var(--testo-tenue); }
+
+@media (max-width: 30rem) {
+  .risposta__quando { margin-left: 0; width: 100%; }
+}
+
+/* Il link "Risposte" nella barra e` un <a>, non un <button>: senza questo
+   arriverebbe sottolineato e di un altro colore in mezzo ai pulsanti. */
+a.tasto-barra { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* "Ho dimenticato la password": un collegamento, non un pulsante. Se avesse
+   la stessa forma di "Accedi" competerebbe con l'azione principale. */
+.auth-collegamento {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  align-self: flex-start;
+  font: inherit;
+  font-size: 0.82rem;
+  color: #3f5551;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.auth-collegamento:hover { color: #26292b; }
+
+/* ------------------------------------------------ pagina nuova password */
+/* Ci si arriva dal link nell'email, quindi da fuori: non c'e' la barra
+   dell'editor sopra e la pagina deve reggersi da sola. */
+.pagina-password {
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 10vw, 5rem) 1.5rem 4rem;
+}
+.pagina-password h1 {
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  margin: 0 0 1.5rem;
+}
+.password-avviso {
+  background: #fdf2f0;
+  border: 1px solid #e8c8c2;
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  color: #8a4a41;
+  margin: 0 0 1rem;
+}
+.password-nota { color: var(--testo-tenue); margin: 0 0 1.5rem; }
+.modulo-password { display: grid; gap: 1.1rem; }
+.modulo-password .tasto-popup { justify-self: start; }
+
+/* --------------------------------------------------- aggiungere una sezione */
+/* Il "+" fra un blocco e l'altro. Discreto finche` non ci si passa sopra:
+   l'editor mostra l'invito com'e`, e una fila di pulsanti sempre accesi
+   toglierebbe proprio la cosa che si sta cercando di giudicare. */
+.aggiungi-qui {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 0.35rem 0;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+/* Su schermo tattile non esiste "passarci sopra": li` restano sempre
+   visibili, solo tenui. Senza questa riga la funzione sarebbe invisibile
+   sul telefono. */
+@media (hover: none) {
+  .aggiungi-qui { opacity: 0.5; }
+}
+.aggiungi-qui:hover,
+.aggiungi-qui:focus-within { opacity: 1; }
+
+/* La linea che attraversa: dice "qui in mezzo si puo` infilare qualcosa". */
+.aggiungi-qui::before {
+  content: "";
+  position: absolute;
+  inset: 50% 1.5rem auto;
+  height: 1px;
+  background: var(--bordo, #ddd9d1);
+}
+.aggiungi-qui__tasto {
+  position: relative;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--fondo, #f7f6f3);
+  border: 1px solid var(--bordo, #ddd9d1);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--testo-tenue, #666b6e);
+  cursor: pointer;
+}
+.aggiungi-qui__tasto span { font-size: 1rem; line-height: 1; }
+.aggiungi-qui__tasto:hover {
+  color: var(--testo, #26292b);
+  border-color: var(--testo-tenue, #666b6e);
+}
+
+.scelta-sezioni {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.6rem;
+}
+.carta-sezione {
+  appearance: none;
+  display: grid;
+  gap: 0.25rem;
+  text-align: left;
+  padding: 0.85rem 0.95rem;
+  background: #fff;
+  border: 1px solid #e4e0d8;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  color: #26292b;
+}
+.carta-sezione strong { font-size: 0.95rem; font-weight: 500; }
+.carta-sezione span { font-size: 0.8rem; color: #666b6e; line-height: 1.4; }
+.carta-sezione:hover { border-color: #3f5551; background: #fbfaf7; }
+
+/* ------------------------------------------ trascinare le sezioni in ordine */
+/* La targa col nome della sezione e` anche la maniglia: si tiene premuto li` e
+   si trascina su o giu`. La maniglia e` solo la targa, non tutto il blocco:
+   se lo fosse tutto, ogni tentativo di scorrere la pagina col dito sopra una
+   sezione la trascinerebbe invece di far scorrere. */
+.targa-blocco--maniglia { cursor: grab; }
+.targa-blocco--maniglia:active { cursor: grabbing; }
+
+/* I sei puntini della presa: il segno che in ogni interfaccia vuol dire
+   "questo si trascina". Qui hanno senso — erano fuori posto come cursore. */
+.targa-blocco__presa {
+  width: 0.5rem;
+  height: 0.75rem;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  opacity: 0.75;
+  -webkit-mask: radial-gradient(circle at 25% 16.7%, #000 40%, transparent 42%),
+                radial-gradient(circle at 75% 16.7%, #000 40%, transparent 42%),
+                radial-gradient(circle at 25% 50%, #000 40%, transparent 42%),
+                radial-gradient(circle at 75% 50%, #000 40%, transparent 42%),
+                radial-gradient(circle at 25% 83.3%, #000 40%, transparent 42%),
+                radial-gradient(circle at 75% 83.3%, #000 40%, transparent 42%);
+          mask: radial-gradient(circle at 25% 16.7%, #000 40%, transparent 42%),
+                radial-gradient(circle at 75% 16.7%, #000 40%, transparent 42%),
+                radial-gradient(circle at 25% 50%, #000 40%, transparent 42%),
+                radial-gradient(circle at 75% 50%, #000 40%, transparent 42%),
+                radial-gradient(circle at 25% 83.3%, #000 40%, transparent 42%),
+                radial-gradient(circle at 75% 83.3%, #000 40%, transparent 42%);
+}
+
+/* Mentre si trascina, la targa resta visibile anche senza il mouse sopra:
+   altrimenti sparirebbe appena il dito si allontana dal blocco. */
+.tela--modifica .blocco-modificabile[data-trascinato] > .targa-blocco { opacity: 1; }
+.tela--modifica .blocco-modificabile[data-trascinato] {
+  opacity: 0.45;
+  outline: 1px dashed var(--bordo, #ddd9d1);
+}
+
+/* Dove finirebbe mollando adesso. */
+.segno-rilascio {
+  height: 3px;
+  margin: 0.25rem 1.5rem;
+  border-radius: 999px;
+  background: #3f5551;
+  box-shadow: 0 0 0 3px rgb(63 85 81 / 0.16);
+}
+
+/* Riga del file audio nel popup della musica. Nessuna anteprima: di un brano
+   non c'e` niente da guardare, e un lettore qui dentro suonerebbe sopra la
+   musica dell'invito che sta gia` andando. */
+.campo-audio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #e4e0d8;
+  border-radius: 6px;
+  background: #fbfaf7;
+}
+.campo-audio__stato {
+  font-size: 0.9rem;
+  color: #666b6e;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.campo-audio .tasto-popup { cursor: pointer; flex: 0 0 auto; }
+
+/* Il segnaposto di una sezione che non disegna niente. Solo nell'editor:
+   l'ospite non deve vedere nessun buco, e infatti nella pagina invito quei
+   blocchi semplicemente non esistono. */
+.sezione-vuota {
+  margin: 0;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8b8f7e;
+  border: 1px dashed #cfcbbe;
+  border-radius: 6px;
+  margin-inline: clamp(1.25rem, 5vw, 3rem);
+}
+
+/* ------------------------------------------- tasti tondi per i fiori laterali */
+/* Uno per lato, a meta` altezza della sezione. Discreti finche` non ci si
+   passa sopra, come il "+" fra le sezioni: l'editor deve mostrare l'invito,
+   non una plancia di comandi. Quando un fiore c'e` gia`, il tasto resta
+   acceso — cosi` si vede a colpo d'occhio quali sezioni sono gia` decorate. */
+.tasto-fiore {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 15;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--bordo, #ddd9d1);
+  background: var(--carta, #fff);
+  color: var(--testo-tenue, #666b6e);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 160ms ease, transform 120ms ease;
+  box-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.35);
+}
+.tasto-fiore--sx { left: 0.5rem; }
+.tasto-fiore--dx { right: 0.5rem; }
+
+/* Su schermo tattile non esiste "passarci sopra": li` restano visibili. */
+@media (hover: none) { .tasto-fiore { opacity: 0.55; } }
+.blocco-modificabile:hover .tasto-fiore,
+.tasto-fiore:focus-visible { opacity: 1; }
+.tasto-fiore:hover { transform: scale(1.1); }
+
+/* Gia` decorata: il tasto resta acceso anche senza il mouse sopra. */
+.tasto-fiore[data-scelto] {
+  opacity: 0.9;
+  border-color: #6d8140;
+  color: #4d6122;
+}
+
+.popup--fiori { width: min(30rem, 100%); }
+.scelta-fiori {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.carta-fiore {
+  appearance: none;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0.5rem;
+  background: #fbfaf7;
+  border: 1px solid #e4e0d8;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  color: #666b6e;
+}
+.carta-fiore:hover { border-color: #6d8140; }
+.carta-fiore[aria-pressed="true"] { border-color: #4d6122; background: #eef2e4; color: #4d6122; }
+/* L'anteprima e` il file vero, non un'icona: si sceglie guardando quello che
+   si otterra`. Quella di destra e` ribaltata come sara` nell'invito. */
+.carta-fiore__prova {
+  width: 100%;
+  height: 4.5rem;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.carta-fiore__prova[data-lato="dx"] { transform: scaleX(-1); }
+.carta-fiore__prova[data-fiore="mazzo"] { background-image: url("/ornamenti/romantico/mazzo.webp"); }
+.carta-fiore__prova[data-fiore="ramo"] { background-image: url("/ornamenti/romantico/ramo.webp"); }
+.carta-fiore__prova[data-fiore="ghirlanda"] { background-image: url("/ornamenti/romantico/ghirlanda.webp"); }
+.carta-fiore__prova[data-fiore="rododendro"] { background-image: url("/ornamenti/romantico/rododendro.webp"); }
+.carta-fiore__prova[data-fiore="rosa-crema"] { background-image: url("/ornamenti/romantico/rosa-crema.webp"); }
+.carta-fiore__prova[data-fiore="garofano"] { background-image: url("/ornamenti/romantico/garofano.webp"); }
+.carta-fiore__prova[data-fiore="rosa-inciso"] { background-image: url("/ornamenti/romantico/rosa-inciso.webp"); }
+.carta-fiore__prova[data-fiore="cesto"] { background-image: url("/ornamenti/romantico/cesto.webp"); }
+.carta-fiore__prova[data-fiore="rosa-piena"] { background-image: url("/ornamenti/romantico/rosa-piena.webp"); }
+.carta-fiore__prova[data-fiore="rosa-magenta"] { background-image: url("/ornamenti/romantico/rosa-magenta.webp"); }
+
+
+/* Azioni su una singola risposta. Tenui: la pagina serve a leggere le
+   conferme, non a gestirle — il tasto deve esserci senza mettersi in mezzo. */
+.risposta__azioni {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.risposta__domanda { font-size: 0.85rem; color: var(--testo-tenue, #666b6e); }
+.tasto-riga {
+  appearance: none;
+  background: none;
+  border: 1px solid var(--bordo, #ddd9d1);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--testo-tenue, #666b6e);
+  cursor: pointer;
+}
+.tasto-riga:hover { color: var(--testo, #26292b); border-color: var(--testo-tenue, #666b6e); }
+.tasto-riga--pericolo { color: #96564a; border-color: #d9b4ac; }
+.tasto-riga--pericolo:hover { color: #fff; background: #96564a; border-color: #96564a; }
+.tasto-riga:disabled { opacity: 0.5; cursor: default; }
+
+/* ------------------------------------------------- scelta del carattere */
+/* Una tendina fatta a mano invece di un <select>: ogni voce va scritta nel
+   carattere che applica, e `font-family` su <option> Safari e i menu di
+   Android la ignorano. Qui l'anteprima e` tutto il punto della scelta. */
+.scelta-carattere { position: relative; display: flex; align-items: center; gap: 0.5rem; }
+.scelta-carattere__tasto {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 8rem;
+  padding: 0.3rem 0.6rem;
+  background: rgb(242 239 233 / 0.08);
+  border: 1px solid rgb(242 239 233 / 0.25);
+  border-radius: 3px;
+  color: #f2efe9;
+  font: inherit;
+  cursor: pointer;
+}
+.scelta-carattere__tasto:hover { background: rgb(242 239 233 / 0.16); }
+
+.scelta-carattere__elenco {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  z-index: 95;
+  min-width: 12rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: #fffdf9;
+  border: 1px solid #e4e0d8;
+  border-radius: 6px;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.5);
+}
+.scelta-carattere__elenco button {
+  appearance: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  background: none;
+  border: 0;
+  border-radius: 4px;
+  color: #26292b;
+  cursor: pointer;
+}
+.scelta-carattere__elenco button:hover { background: #f2efe9; }
+.scelta-carattere__elenco button[aria-selected="true"] { background: #eef2e4; color: #4d6122; }
+
+/* L'anteprima vera e propria. I corsivi hanno l'occhio molto piu` piccolo:
+   senza la scala qui sotto, nell'elenco sembrerebbero illeggibili accanto ai
+   serif — ed e` proprio il confronto che l'utente sta facendo. */
+.anteprima-carattere {
+  font-size: 1.15rem;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.anteprima-carattere[data-carattere="cormorant"] { font-family: var(--font-cormorant), Georgia, serif; }
+.anteprima-carattere[data-carattere="playfair"] { font-family: var(--font-playfair), Georgia, serif; }
+.anteprima-carattere[data-carattere="italiana"] { font-family: var(--font-italiana), Georgia, serif; }
+.anteprima-carattere[data-carattere="great-vibes"] { font-family: var(--font-great-vibes), cursive; font-size: 1.45rem; }
+.anteprima-carattere[data-carattere="pinyon"] { font-family: var(--font-pinyon), cursive; font-size: 1.5rem; }
+.anteprima-carattere[data-carattere="parisienne"] { font-family: var(--font-parisienne), cursive; font-size: 1.4rem; }
+.anteprima-carattere[data-carattere="tangerine"] { font-family: var(--font-tangerine), cursive; font-size: 1.9rem; font-weight: 700; }
+
+/* --------------------------------------------- altezza del fiore laterale */
+.scelta-altezza__titolo {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a7f82;
+}
+.scelta-altezza { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.tasto-altezza {
+  appearance: none;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.4rem;
+  background: #fbfaf7;
+  border: 1px solid #e4e0d8;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  color: #666b6e;
+}
+.tasto-altezza:hover { border-color: #6d8140; }
+.tasto-altezza[aria-pressed="true"] { border-color: #4d6122; background: #eef2e4; color: #4d6122; }
+
+/* Lo schizzo: un rettangolo che rappresenta la sezione, col pallino dove
+   finira` il fiore. Disegnato in CSS, nessuna icona da mantenere. */
+.tasto-altezza__prova {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 2.6rem;
+  border: 1px dashed #cfcbbe;
+  border-radius: 4px;
+  background: #fff;
+}
+.tasto-altezza__prova i {
+  position: absolute;
+  left: 0.25rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #8aa05c;
+}
+.tasto-altezza__prova[data-altezza="alto"] i { top: 0.25rem; }
+.tasto-altezza__prova[data-altezza="meta"] i { top: 50%; translate: 0 -50%; }
+.tasto-altezza__prova[data-altezza="basso"] i { bottom: 0.25rem; }

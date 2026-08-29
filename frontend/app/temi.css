@@ -1,0 +1,401 @@
+/* Due dimensioni indipendenti.
+
+   La PALETTE porta i colori: `[data-palette]`.
+   Il TEMA porta caratteri e ornamenti: `[data-tema]`.
+
+   Sono separate perché sono due scelte diverse — «voglio dei fiori» non è
+   «voglio il verde» — e ogni combinazione è valida. Gli ornamenti del tema
+   pescano il colore dai token della palette, quindi i fiori del tema
+   romantico cambiano tinta al cambio di palette senza toccare nulla. */
+
+/* I fiori laterali sul telefono sporgono di proposito oltre i bordi
+   (`left/right: -12vw`), e questo faceva scorrere la pagina in orizzontale:
+   misurata 437px di larghezza su una vista da 390. `clip` e non `hidden`
+   perche' `hidden` romperebbe la barra dell'editor, che e` `sticky`. */
+html { overflow-x: clip; }
+
+:root {
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-12: 3rem;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  /* Il massimo vale solo da schermo largo: sul telefono 11vw restano sotto
+     il minimo, quindi li' il respiro non cambia — ed e' gia' giusto. */
+  --sezione-y: clamp(3.5rem, 11vw, 4.5rem);
+  --misura: 40rem;
+}
+
+/* ===================================================== palette: i colori */
+
+/* Verde oliva — verde caldo e ottone antico su avorio. */
+[data-palette="oliva"] {
+  --fondo: #faf8f1;
+  --fondo-alt: #f2eee1;
+  --carta: #fffdf7;
+  --testo: #2c2f22;
+  --testo-tenue: #6a6d55;
+  --bordo: #e2ddc9;
+  --primario: #56652f;
+  --primario-chiaro: #6b7646;
+  --accento: #886f37;
+  /* Tinta chiara riservata al decoro: non ci va mai sopra del testo. */
+  --decoro: #8b9a5b;
+  --accento-su-scuro: #e6d7a6;
+  --su-primario: #fffdf7;
+  --ornamento: #a9b784;
+  --hero-fondo: linear-gradient(165deg, #7c8b4e 0%, #56652f 55%, #333b1b 100%);
+}
+
+/* Blu scuro — blu notte e oro tenue su carta fredda. */
+[data-palette="blu"] {
+  --fondo: #f7f8fb;
+  --fondo-alt: #ebeff6;
+  --carta: #ffffff;
+  --testo: #1a2333;
+  --testo-tenue: #57617a;
+  --bordo: #d6dde9;
+  --primario: #22375a;
+  --primario-chiaro: #57739a;
+  --accento: #876f38;
+  /* Tinta chiara riservata al decoro: non ci va mai sopra del testo. */
+  --decoro: #5f7ea8;
+  --accento-su-scuro: #e9d6a2;
+  --su-primario: #ffffff;
+  --ornamento: #93a9c8;
+  --hero-fondo: linear-gradient(165deg, #3b5680 0%, #22375a 55%, #131e31 100%);
+}
+
+/* ============================================ tema: caratteri e ornamenti */
+
+[data-tema] {
+  --ui: var(--font-jost), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --raggio: 0px;
+  position: relative;
+}
+
+/* Sobrio — nessun ornamento, solo tipografia. */
+[data-tema="sobrio"] {
+  --display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --peso-display: 400;
+  --tracking-etichetta: 0.28em;
+}
+
+/* Un unico filetto sotto i titoli: l'unica concessione decorativa. */
+[data-tema="sobrio"] .sezione > h2::after {
+  content: "";
+  display: block;
+  width: 2.75rem;
+  height: 1px;
+  margin: var(--sp-4) auto 0;
+  background: var(--decoro);
+  opacity: 0.85;
+}
+
+/* Romantico — serif alto e sottile, fiori ai lati. */
+[data-tema="romantico"] {
+  --display: var(--font-italiana), Georgia, serif;
+  --peso-display: 400;
+  --tracking-etichetta: 0.3em;
+}
+
+/* ATTENZIONE ALL'ORDINE: questo blocco deve stare **dopo** i temi.
+   `[data-tema]` e `[data-carattere]` hanno la stessa specificita`, quindi
+   vince l'ultimo scritto. Stando prima, il tema romantico imponeva Italiana e
+   la scelta dell'utente veniva ignorata in silenzio: chi sceglieva
+   "Calligrafico" continuava a vedere Italiana senza capire perche'. */
+
+/* ================================================ carattere: i titoli */
+
+/* Terza scelta, indipendente da tema e palette. Tocca solo `--display`, cioe'
+   i titoli e i nomi: il testo corrente resta sempre nel carattere da
+   interfaccia, che si legge anche in sei righe di fila. Un corsivo inglese e'
+   bellissimo su due nomi e illeggibile su un paragrafo. */
+[data-carattere="cormorant"] { --display: var(--font-cormorant), Georgia, serif; }
+[data-carattere="italiana"] { --display: var(--font-italiana), Georgia, serif; }
+[data-carattere="playfair"] { --display: var(--font-playfair), Georgia, serif; }
+
+/* I corsivi hanno l'occhio molto piu' piccolo dei serif: alla stessa misura
+   sembrerebbero minuscoli. `--scala-display` li riporta in equilibrio. */
+[data-carattere="great-vibes"] { --display: var(--font-great-vibes), cursive; --scala-display: 1.22; }
+[data-carattere="pinyon"] { --display: var(--font-pinyon), cursive; --scala-display: 1.25; }
+[data-carattere="parisienne"] { --display: var(--font-parisienne), cursive; --scala-display: 1.18; }
+[data-carattere="tangerine"] { --display: var(--font-tangerine), cursive; --scala-display: 1.55; --peso-display: 700; }
+
+:root { --scala-display: 1; }
+
+/* Applicata dove il carattere da titolo e' davvero in uso. */
+.hero__nomi, .lettera__nomi, .sezione > h2, .hero__occhiello {
+  font-size: calc(var(--misura-titolo, 1rem) * var(--scala-display));
+}
+
+
+/* Un ramo asimmetrico per sezione, non una tappezzeria che si ripete lungo
+   tutta la pagina: ogni sezione che entra nello scroll rivela il suo,
+   angolo in alto a sinistra ed eco in basso a destra — «sinistra e destra»
+   senza diventare una parete di fiori. Sono maschere, non immagini
+   colorate: il colore arriva da --ornamento e segue la palette. */
+[data-tema] .blocco-guscio { position: relative; z-index: 1; }
+
+[data-tema="romantico"] .blocco-guscio::before,
+[data-tema="romantico"] .blocco-guscio::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(2.75rem, 9vw, 4.75rem);
+  aspect-ratio: 200 / 300;
+  background-color: var(--ornamento);
+  -webkit-mask: url("/ornamenti/ramo-angolo.svg") no-repeat;
+  mask: url("/ornamenti/ramo-angolo.svg") no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  opacity: 0.55;
+  pointer-events: none;
+}
+[data-tema="romantico"] .blocco-guscio::before { top: 0; left: 0; }
+/* Stesso ramo, ruotato: l'eco in basso a destra non è una fotocopia. */
+[data-tema="romantico"] .blocco-guscio::after {
+  bottom: 0;
+  right: 0;
+  rotate: 180deg;
+  opacity: 0.4;
+}
+/* Le sezioni brevi (countdown, RSVP) non hanno spazio per due rami:
+   solo quello in alto a sinistra. */
+[data-tema="romantico"] .blocco-guscio:has([aria-label="Tempo rimanente"])::after,
+[data-tema="romantico"] .blocco-guscio:has(.rsvp)::after { display: none; }
+
+@media (max-width: 30rem) {
+  [data-tema="romantico"] .blocco-guscio::before,
+  [data-tema="romantico"] .blocco-guscio::after { opacity: 0.34; }
+}
+
+/* Il monogramma A&V sotto i titoli, al posto del rametto che c'era prima.
+   Come tutti gli ornamenti e` una maschera: il tratto prende `--accento` e
+   segue la palette, invece di restare nero su qualunque invito. */
+[data-tema="romantico"] .sezione > h2::after {
+  content: "";
+  display: block;
+  width: clamp(3.6rem, 11vw, 4.6rem);
+  aspect-ratio: 498 / 170;
+  margin: var(--sp-4) auto 0;
+  background-color: var(--accento);
+  -webkit-mask: url("/ornamenti/av.png") center / contain no-repeat;
+  mask: url("/ornamenti/av.png") center / contain no-repeat;
+  opacity: 0.85;
+}
+
+
+/* ============================================ cornice floreale (romantico) */
+/* Acquerelli veri, non maschere tinte: qui il colore sta nell'illustrazione e
+   non segue la palette. Per questo la cornice e` legata al tema `romantico` e
+   non alla palette — sono verdi salvia e crema, e stanno bene sull'oliva
+   quanto sul blu, ma non si possono ricolorare come i rami in SVG qui sopra.
+
+   Le immagini sono in `public/ornamenti/romantico/`, scontornate da
+   `strumenti/scontorna.py` a partire dagli originali in `inputs/`.
+
+   Incornicia l'hero e non l'intera pagina: un invito e` lungo qualche
+   migliaio di pixel, e due angoli distanti cosi` non si leggono piu` come una
+   cornice — si leggono come due disegni scollegati. Attorno ai nomi invece la
+   cornice si vede tutta in un colpo d'occhio, che e` il punto. */
+
+[data-tema="romantico"] .hero { isolation: isolate; }
+
+/* Il testo sopra ai fiori, sempre. */
+[data-tema="romantico"] .hero__testo,
+[data-tema="romantico"] .hero__foto { position: relative; z-index: 1; }
+
+/* La ghirlanda corona i nomi, dall'alto. */
+[data-tema="romantico"] .hero--senza-foto::before {
+  content: "";
+  position: absolute;
+  /* Un filo staccata dal bordo: appoggiata a `top: 0` le punte di eucalipto
+     finivano tagliate dallo schermo. */
+  top: clamp(0.5rem, 2.5vh, 1.75rem);
+  left: 50%;
+  translate: -50% 0;
+  width: min(30rem, 86%);
+  aspect-ratio: 900 / 782;
+  /* Il tetto in altezza non e` un dettaglio: i nomi stanno al centro
+     dell'hero, e senza questo su uno schermo largo la ghirlanda arrivava a
+     coprirli. `contain` la rimpicciolisce dentro il limite invece di
+     tagliarla. */
+  max-height: min(34vh, 17rem);
+  background: url("/ornamenti/romantico/ghirlanda.webp") top center / contain no-repeat;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* I due spigoli chiudono la cornice in basso. Sono un'immagine sola con due
+   livelli di sfondo: il secondo file e` gia` speculare, perche' un
+   `background-image` non si puo` ribaltare in CSS e ribaltare l'elemento
+   ribalterebbe anche l'angolo sinistro. */
+[data-tema="romantico"] .hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: clamp(6rem, 20vw, 11rem);
+  background-image: url("/ornamenti/romantico/spigolo.webp"),
+                    url("/ornamenti/romantico/spigolo-destro.webp");
+  background-position: left bottom, right bottom;
+  background-size: auto 100%, auto 100%;
+  background-repeat: no-repeat, no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Con la foto la parte alta e` gia` occupata: resta solo la base. */
+[data-tema="romantico"] .hero--con-foto::after { opacity: 0.75; }
+
+/* Sul telefono la cornice deve incorniciare, non invadere: i nomi vengono
+   prima dei fiori. */
+/* Sul telefono gli spigoli in basso arrivavano a coprire il luogo scritto
+   sotto i nomi. Piu' bassi, piu' tenui e spinti verso i bordi: incorniciano
+   l'angolo invece di entrare nella colonna del testo. */
+@media (max-width: 40rem) {
+  [data-tema="romantico"] .hero--senza-foto::before { width: 100%; opacity: 0.7; }
+  [data-tema="romantico"] .hero::after {
+    height: clamp(4rem, 13vw, 6rem);
+    opacity: 0.6;
+    background-size: auto 100%, auto 100%;
+    background-position: left -3vw bottom, right -3vw bottom;
+  }
+}
+
+/* Chi ha chiesto meno decorazione a schermo non deve trovarsi una pagina
+   coperta di fiori. */
+@media (prefers-reduced-motion: reduce) {
+  [data-tema="romantico"] .hero--senza-foto::before,
+  [data-tema="romantico"] .hero::after { opacity: 0.6; }
+}
+
+
+/* ================================== fiori ai lati delle sezioni (romantico) */
+/* Scelti dall'utente sezione per sezione, con i tasti tondi dell'editor.
+   Il dato sta nel blocco (`fiore_sx` / `fiore_dx`), quindi si vedono identici
+   nell'editor e nell'invito: e` decorazione, non un aiuto alla modifica.
+
+   Solo nel tema romantico, come i rami qui sopra: sono acquerelli veri, verdi
+   salvia e crema, e sul tema sobrio stonerebbero. Anche i tasti per sceglierli
+   compaiono solo li`. */
+[data-tema="romantico"] .fiore {
+  position: absolute;
+  z-index: -1;
+  width: clamp(4.5rem, 15vw, 10rem);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.85;
+  pointer-events: none;
+
+  /* Il fiore sfuma verso il centro della pagina, dove corre il testo.
+     Pieno sul margine esterno, sparito prima di arrivare alle parole.
+
+     Abbassare l'opacita' di tutto sarebbe stato piu' semplice e peggio: i
+     fiori sarebbero diventati slavati anche dove non danno fastidio, e sul
+     testo resterebbero comunque delle foglie scure sotto le lettere.
+
+     Una regola sola per tutti e due i lati: il fiore di destra e` gia`
+     ribaltato con `scaleX(-1)`, e la maschera vive nelle sue coordinate
+     locali — quindi si ribalta insieme a lui e sfuma dalla parte giusta. */
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 42%, transparent 94%);
+  mask-image: linear-gradient(to right, #000 0%, #000 42%, transparent 94%);
+}
+/* Fuori dal tema romantico il dato resta scritto, ma non si disegna niente:
+   cambiare tema non deve cancellare le scelte fatte. */
+.fiore { display: none; }
+[data-tema="romantico"] .fiore { display: block; }
+
+/* Tre altezze per lato. `meta` e` il valore storico e resta il predefinito:
+   un blocco salvato prima che l'altezza esistesse non ha il campo, e deve
+   continuare a comportarsi come sempre. */
+[data-tema="romantico"] .fiore[data-altezza="meta"] { top: 50%; translate: 0 -50%; }
+[data-tema="romantico"] .fiore[data-altezza="alto"] { top: 0; }
+[data-tema="romantico"] .fiore[data-altezza="basso"] { bottom: 0; }
+
+[data-tema="romantico"] .fiore--sx { left: 0; }
+/* Ribaltato, non un secondo file: due copie speculari ai due lati leggono
+   come una cornice, la stessa immagine identica legge come una svista. */
+[data-tema="romantico"] .fiore--dx { right: 0; transform: scaleX(-1); }
+
+[data-tema="romantico"] .fiore[data-fiore="mazzo"] {
+  aspect-ratio: 729 / 900;
+  background-image: url("/ornamenti/romantico/mazzo.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="ramo"] {
+  aspect-ratio: 900 / 842;
+  background-image: url("/ornamenti/romantico/ramo.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="ghirlanda"] {
+  aspect-ratio: 900 / 782;
+  background-image: url("/ornamenti/romantico/ghirlanda.webp");
+}
+
+[data-tema="romantico"] .fiore[data-fiore="rododendro"] {
+  aspect-ratio: 560 / 806;
+  background-image: url("/ornamenti/romantico/rododendro.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="rosa-crema"] {
+  aspect-ratio: 642 / 900;
+  background-image: url("/ornamenti/romantico/rosa-crema.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="garofano"] {
+  aspect-ratio: 900 / 766;
+  background-image: url("/ornamenti/romantico/garofano.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="rosa-inciso"] {
+  aspect-ratio: 726 / 640;
+  background-image: url("/ornamenti/romantico/rosa-inciso.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="cesto"] {
+  aspect-ratio: 788 / 224;
+  background-image: url("/ornamenti/romantico/cesto.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="rosa-piena"] {
+  aspect-ratio: 697 / 751;
+  background-image: url("/ornamenti/romantico/rosa-piena.webp");
+}
+[data-tema="romantico"] .fiore[data-fiore="rosa-magenta"] {
+  aspect-ratio: 590 / 864;
+  background-image: url("/ornamenti/romantico/rosa-magenta.webp");
+}
+
+/* Sul telefono i fiori non devono mangiarsi il testo: piu` piccoli, piu`
+   tenui, e mezzi fuori dal bordo — decorano il margine, non la colonna. */
+/* Sul telefono la colonna di testo occupa quasi tutto lo schermo: qui la
+   sfumatura deve cominciare prima e finire piu' presto, o le parole passano
+   comunque sopra le foglie. Il fiore e` anche piu' stretto e spinto piu'
+   fuori: quello che si vede e` la parte esterna, la piu' bella. */
+@media (max-width: 40rem) {
+  [data-tema="romantico"] .fiore {
+    width: 34vw;
+    opacity: 0.62;
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 26%, transparent 86%);
+    mask-image: linear-gradient(to right, #000 0%, #000 26%, transparent 86%);
+  }
+  [data-tema="romantico"] .fiore--sx { left: -13vw; }
+  [data-tema="romantico"] .fiore--dx { right: -13vw; }
+}
+
+/* ================================================ il greco ha bisogno d'altro */
+/* Nessuno dei caratteri scelti dall'utente ha l'alfabeto greco: ne` i serif
+   ne` i tre corsivi calligrafici. Su /gr il carattere scelto resterebbe solo
+   per i nomi (che sono in caratteri latini) e tutto il resto ripiegherebbe sul
+   font di sistema, diverso su ogni dispositivo.
+
+   Qui si impone Noto, che il greco ce l'ha. Si perde la calligrafia sui
+   titoli greci — un corsivo da partecipazione con l'alfabeto greco su Google
+   Fonts non esiste — ma la pagina resta coerente ovunque. */
+[data-lingua="el"] {
+  --display: var(--font-noto-serif), Georgia, serif;
+  --ui: var(--font-noto-sans), system-ui, sans-serif;
+  /* Noto Serif ha l'occhio grande: la scala pensata per i corsivi lo
+     renderebbe sproporzionato. */
+  --scala-display: 1;
+}

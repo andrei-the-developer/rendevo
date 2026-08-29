@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inviti digitali per matrimoni, compleanni e feste</title>
+<meta name="description" content="Partecipazioni digitali da mandare su WhatsApp: la busta si apre con il sigillo, con musica, programma, mappa e conferme di presenza. Si crea dal computer, si riceve dal telefono. Gratis.">
+
+<!-- Anteprima nelle chat: e` da li` che arrivera` quasi tutto il traffico,
+     visto che il link si passa su WhatsApp. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Inviti digitali per matrimoni, compleanni e feste">
+<meta property="og:description" content="La busta si apre con il sigillo, con musica, programma, mappa e conferme di presenza. Si manda su WhatsApp. Gratis.">
+<!-- L'immagine che WhatsApp mostra quando si incolla il link. Assoluta:
+     relativa non viene letta dai crawler delle chat. Generata da
+     social/genera-og.py, non disegnata a mano: si rifa` da li`. -->
+<meta property="og:image" content="https://rendevo.eu/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Una busta avorio chiusa da un sigillo di ceralacca rossa con le iniziali AV">
+<meta property="og:url" content="https://rendevo.eu/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:locale" content="it_IT">
+<meta name="theme-color" content="#56652f">
+
+<!-- NIENTE Google Fonts: l'applicazione si auto-ospita i caratteri apposta
+     (vincolo self-hosted, e un font caricato dal CDN di Google manda l'IP di
+     ogni visitatore a Mountain View). Qui si usano i caratteri di sistema. -->
+<style>
+:root {
+  --fondo: #faf8f1;
+  --fondo-alt: #f2eee1;
+  --carta: #fffdf7;
+  --testo: #2c2f22;
+  --testo-tenue: #6a6d55;
+  --bordo: #e2ddc9;
+  --primario: #56652f;
+  --primario-chiaro: #6b7646;
+  --su-primario: #fffdf7;
+  --ornamento: #a9b784;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--testo);
+  font-family: var(--ui);
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+.gabbia { width: min(64rem, 100% - 2.5rem); margin-inline: auto; }
+
+/* ------------------------------------------------------------------ hero */
+.hero {
+  background: linear-gradient(165deg, #7c8b4e 0%, #56652f 55%, #333b1b 100%);
+  color: var(--su-primario);
+  padding: clamp(4rem, 13vw, 8rem) 0 clamp(3.5rem, 10vw, 6rem);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Filo d'ottone in alto: lo stesso stacco che l'invito ha sulla busta. */
+.hero::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: linear-gradient(90deg, transparent, #e6d7a6, transparent);
+}
+.occhiello {
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #e6d7a6;
+  margin: 0 0 1.4rem;
+}
+h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.2rem;
+}
+h1 em { font-style: italic; color: #e6d7a6; }
+.sottotitolo {
+  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  max-width: 34rem;
+  margin: 0 auto 2.4rem;
+  color: rgb(255 253 247 / 0.88);
+}
+
+/* ----------------------------------------------------------------- tasto */
+.tasto {
+  display: inline-block;
+  background: var(--su-primario);
+  color: #2c2f22;
+  font-family: var(--ui);
+  font-size: 1.02rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  padding: 1.05rem 2.4rem;
+  border-radius: 999px;
+  box-shadow: 0 14px 34px -14px rgb(0 0 0 / 0.5);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.tasto:hover, .tasto:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -14px rgb(0 0 0 / 0.55);
+}
+.tasto:active { transform: translateY(0); }
+.sotto-tasto {
+  margin: 1.1rem 0 0;
+  font-size: 0.9rem;
+  color: rgb(255 253 247 / 0.72);
+}
+
+/* ----------------------------------------------------------------- passi */
+.passi { padding: clamp(3.5rem, 9vw, 5.5rem) 0; }
+.passi h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  text-align: center;
+  margin: 0 0 3rem;
+}
+.griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.5rem;
+}
+.passo {
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: 14px;
+  padding: 1.9rem 1.6rem;
+}
+.numero {
+  font-family: var(--serif);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--ornamento);
+  display: block;
+  margin-bottom: 0.7rem;
+}
+.passo h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+}
+.passo p { margin: 0; color: var(--testo-tenue); font-size: 0.97rem; }
+
+/* --------------------------------------------------------- perche' / elenco */
+.perche {
+  padding: clamp(3rem, 8vw, 4.5rem) 0;
+  border-bottom: 1px solid var(--bordo);
+}
+.perche p {
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 2.6vw, 1.45rem);
+  line-height: 1.5;
+  max-width: 38rem;
+  margin: 0 auto 1.1rem;
+  text-align: center;
+}
+.perche p:last-child { margin-bottom: 0; color: var(--testo-tenue); }
+.perche strong { color: var(--primario); font-weight: 400; }
+
+.riceve { padding: 0 0 clamp(3.5rem, 9vw, 5.5rem); }
+.riceve h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  text-align: center;
+  margin: 0 0 2rem;
+}
+.elenco {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 34rem;
+  columns: 2;
+  column-gap: 2.5rem;
+}
+.elenco li {
+  break-inside: avoid;
+  padding: 0.5rem 0 0.5rem 1.4rem;
+  position: relative;
+  color: var(--testo-tenue);
+}
+.elenco li::before {
+  content: "";
+  position: absolute; left: 0; top: 1.05rem;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ornamento);
+}
+@media (max-width: 34rem) { .elenco { columns: 1; } }
+
+/* --------------------------------------------------------------- chiusura */
+.chiusura {
+  background: var(--fondo-alt);
+  border-top: 1px solid var(--bordo);
+  padding: clamp(3.5rem, 9vw, 5.5rem) 0;
+  text-align: center;
+}
+.chiusura h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+  margin: 0 0 0.9rem;
+}
+.chiusura p { color: var(--testo-tenue); margin: 0 0 2rem; }
+.tasto--scuro {
+  background: var(--primario);
+  color: var(--su-primario);
+  box-shadow: 0 14px 30px -16px rgb(86 101 47 / 0.9);
+}
+.tasto--scuro:hover, .tasto--scuro:focus-visible { background: var(--primario-chiaro); }
+
+footer {
+  padding: 2.2rem 0 3rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--testo-tenue);
+}
+
+/* Chi ha chiesto meno animazioni non deve vedere il tasto saltare. */
+@media (prefers-reduced-motion: reduce) {
+  .tasto { transition: none; }
+  .tasto:hover, .tasto:focus-visible { transform: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+  <div class="gabbia">
+    <p class="occhiello">Inviti digitali</p>
+    <h1>La partecipazione<br><em>che si apre come una busta</em></h1>
+    <p class="sottotitolo">
+      Matrimoni, compleanni e feste. Chi lo riceve apre una busta con il
+      sigillo, sente la musica, legge tutto e ti dice se ci sarà. Dal telefono,
+      senza scaricare niente.
+    </p>
+    <a class="tasto" href="/edit">Crea il tuo invito</a>
+    <p class="sotto-tasto">
+      Gratis, senza registrarti. Si crea dal computer, si riceve dal telefono.
+    </p>
+  </div>
+</header>
+
+<main>
+  <section class="perche">
+    <div class="gabbia">
+      <p>
+        Cento partecipazioni di carta costano fra <strong>200 e 600 euro</strong>,
+        si spediscono a mano, e due settimane prima ancora non sai quanti
+        saranno a tavola.
+      </p>
+      <p>
+        Un invito digitale si manda su WhatsApp in un minuto, si corregge se
+        cambia l'orario, e le risposte arrivano da sole.
+      </p>
+    </div>
+  </section>
+
+  <section class="passi">
+    <div class="gabbia">
+      <h2>Come funziona</h2>
+      <div class="griglia">
+        <article class="passo">
+          <span class="numero">1</span>
+          <h3>Scegli lo stile e scrivi</h3>
+          <p>
+            Parti da un invito già pronto e clicca su qualsiasi parte per
+            cambiarla: data, luogo con la mappa, programma della giornata,
+            foto, un brano che parte all'apertura, il conto alla rovescia.
+            Dal computer, con calma.
+          </p>
+        </article>
+        <article class="passo">
+          <span class="numero">2</span>
+          <h3>Copia il link</h3>
+          <p>
+            Un pulsante ti dà l'indirizzo del tuo invito. È sempre lo stesso:
+            puoi mandarlo a tutti, anche in momenti diversi, senza confonderti.
+          </p>
+        </article>
+        <article class="passo">
+          <span class="numero">3</span>
+          <h3>Raccogli le risposte</h3>
+          <p>
+            I tuoi invitati aprono la busta dal telefono e dicono se ci saranno
+            e in quanti. Niente da installare e niente registrazione, né per te
+            né per loro.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="riceve">
+    <div class="gabbia">
+      <h2>Cosa riceve chi è invitato</h2>
+      <ul class="elenco">
+        <li>La busta con il sigillo, che si apre toccandola</li>
+        <li>La musica, che parte all'apertura</li>
+        <li>Il conto alla rovescia</li>
+        <li>Il programma, ora per ora</li>
+        <li>Il luogo con la mappa</li>
+        <li>Le vostre foto</li>
+        <li>Il pulsante per dire se ci sarà, e in quanti</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="chiusura">
+    <div class="gabbia">
+      <h2>Provalo adesso</h2>
+      <p>
+        Lo stiamo ancora costruendo, ed è gratuito. Se ti va di provarlo prima
+        degli altri e dirci cosa non funziona, siamo tutt'orecchi.
+      </p>
+      <a class="tasto tasto--scuro" href="/edit">Crea il tuo invito</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="gabbia">Rendevo — fatto in Italia.</div>
+</footer>
+
+</body>
+</html>

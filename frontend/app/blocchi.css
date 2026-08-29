@@ -1,0 +1,1031 @@
+/* Stili dei blocchi. Valgono identici in lettura e in modifica: la modalità
+   aggiunge solo i contorni e i controlli, mai un aspetto diverso — è la
+   garanzia che l'admin veda quello che vedrà l'invitato. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-size: clamp(1rem, 0.97rem + 0.2vw, 1.0625rem);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Le basi tipografiche stanno qui e non su `body`: i token del tema sono
+   definiti su questo elemento, e le variabili CSS scendono ai figli, non
+   risalgono al genitore. Su body `var(--ui)` non risolve e il testo cade
+   silenziosamente su Times. */
+[data-tema] {
+  min-height: 100svh;
+  background-color: var(--fondo);
+  color: var(--testo);
+  font-family: var(--ui);
+  font-weight: 300;
+}
+
+[hidden] { display: none !important; }
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.etichetta {
+  font-size: 0.72rem;
+  letter-spacing: var(--tracking-etichetta);
+  text-transform: uppercase;
+}
+
+.amp {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 0.62em;
+  /* Oro con un riflesso, non un colore piatto: è la differenza fra
+     "verniciato" e "a foglia oro" osservata sugli inviti editoriali. */
+  background: linear-gradient(100deg,
+      var(--accento) 25%,
+      color-mix(in srgb, var(--accento) 45%, white) 50%,
+      var(--accento) 75%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ------------------------------------------------------------- sezioni */
+
+.sezione {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: var(--sezione-y) var(--gutter);
+}
+.sezione--stretta { max-width: var(--misura); text-align: center; }
+/* Nessuna linea fra le sezioni: lo scorrimento deve essere continuo, senza
+   che si veda dove una finisce e comincia l'altra. Il ritmo lo dà lo spazio
+   verticale, non un tratto. */
+
+.sezione > h2 {
+  --misura-titolo: clamp(1.85rem, 6vw, 2.75rem);
+  font-size: var(--misura-titolo);
+  text-align: center;
+  margin-bottom: var(--sp-8);
+}
+
+.pre-linea { white-space: pre-line; }
+
+/* ---------------------------------------------------------------- hero */
+
+.hero { position: relative; text-align: center; }
+
+.hero--senza-foto {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  color: var(--su-primario);
+  background: var(--hero-fondo);
+}
+.hero--senza-foto .amp { color: var(--accento-su-scuro); }
+
+/* La foto si vede intera: nessun ritaglio, e il testo sta sotto, non sopra. */
+.hero--con-foto { background: var(--fondo); padding-bottom: var(--sp-12); }
+.hero__foto {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 82svh;
+  margin-inline: auto;
+  /* Bordi sfumati invece che tagliati di netto: la foto si posa sulla carta
+     invece di essere un rettangolo incollato sopra. E` una maschera, quindi
+     funziona su qualunque sfondo — con una cornice sfumata dipinta sopra si
+     vedrebbe lo stacco appena cambia la palette.
+
+     Due sfumature incrociate e non un'ellisse: l'ellisse scurisce anche il
+     centro e su una foto di persone diventa un occhio di bue. Cosi' invece
+     sfuma solo una fascia lungo i quattro bordi, e il soggetto resta pieno. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-composite: intersect;
+}
+
+@media (max-width: 40rem) {
+  /* Sul telefono la foto arrivava a filo dei bordi e copriva quasi tutto lo
+     schermo: l'invito sembrava cominciare con un muro. */
+  .hero__foto {
+    max-width: calc(100% - 2 * var(--sp-8));
+    max-height: 58svh;
+    margin-block: var(--sp-8);
+  }
+}
+
+.hero__nomi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  --misura-titolo: clamp(2.75rem, 13vw, 6.5rem);
+  font-size: var(--misura-titolo);
+}
+.hero__nomi > span { overflow-wrap: anywhere; }
+
+@media (min-width: 34rem) {
+  .hero__nomi { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: baseline; }
+  .hero__nomi .amp { font-size: 1em; margin: 0 0.28em; }
+}
+
+/* "Ci sposiamo": l'annuncio, non un'etichettina. Stessa misura e stesso
+   carattere dei titoli di sezione — e` un titolo a tutti gli effetti. */
+.hero__occhiello {
+  margin: 0 0 var(--sp-6);
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  --misura-titolo: clamp(1.85rem, 6vw, 2.75rem);
+  font-size: var(--misura-titolo);
+  line-height: 1.15;
+  text-align: center;
+  opacity: 0.95;
+}
+/* Con la foto sta in cima alla pagina: gli serve aria sopra, che senza foto
+   arriva invece dalla centratura verticale dell'hero. */
+.hero--con-foto .hero__occhiello { padding: var(--sezione-y) var(--gutter) 0; }
+.hero__data { margin: var(--sp-4) 0 0; font-size: 0.8rem; letter-spacing: 0.24em; text-transform: uppercase; }
+.hero__luogo { margin: var(--sp-2) 0 0; font-family: var(--display); font-style: italic; font-size: 1.15rem; }
+.hero--con-foto .hero__testo { padding: var(--sp-8) var(--gutter) 0; }
+
+/* ----------------------------------------------------------- countdown */
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(0.5rem, 2vw, 1.5rem);
+  max-width: 34rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.countdown b {
+  display: block;
+  font-family: var(--display);
+  font-size: clamp(2rem, 9vw, 3.25rem);
+  font-weight: var(--peso-display);
+  line-height: 1;
+  color: var(--primario);
+  font-variant-numeric: tabular-nums;
+}
+.countdown span {
+  display: block;
+  margin-top: var(--sp-2);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+
+/* --------------------------------------------------------------- testo */
+
+.testo--evidenza {
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 4.5vw, 1.75rem);
+  line-height: 1.6;
+  color: var(--primario);
+  margin: 0;
+}
+.testo__corpo { color: var(--testo-tenue); margin: 0; }
+
+/* ----------------------------------------------------------- programma */
+
+.programma { list-style: none; margin: 0 auto; padding: 0; max-width: 34rem; }
+.programma li {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: var(--sp-6);
+  padding-bottom: var(--sp-8);
+  position: relative;
+}
+.programma li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 4.5rem;
+  top: 0.85rem;
+  bottom: 0;
+  width: 1px;
+  background: var(--bordo);
+}
+.programma li::after {
+  content: "";
+  position: absolute;
+  left: calc(4.5rem - 3px);
+  top: 0.7rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--decoro);
+}
+/* Gli orari NON usano il carattere da titolo.
+   `--display` lo sceglie l'utente, e fra le voci ci sono tre corsivi
+   calligrafici: "16:00" in Tangerine o Pinyon non e' piu' un orario, e` un
+   ghirigoro. In piu` i serif come Cormorant hanno le cifre "all'antica", con
+   il 6 e il 9 che scendono sotto la riga e lo 0 piccolo come una o.
+   Qui serve il carattere da interfaccia, con le cifre allineate e a larghezza
+   fissa cosi` le colonne di orari restano incolonnate. */
+.programma__ora {
+  font-family: var(--ui);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--accento);
+  text-align: right;
+  padding-right: var(--sp-6);
+}
+.programma h3 { font-size: 1.4rem; }
+.programma p { margin: var(--sp-1) 0 0; color: var(--testo-tenue); font-size: 0.95rem; }
+
+/* --------------------------------------------------------------- luogo */
+
+/* La sezione non mette respiro: ce l'ha gia` la scheda, e due luoghi di fila
+   finivano lontanissimi. Le sezioni prima e dopo hanno il loro, quindi il
+   ritmo verticale della pagina non si perde. */
+.sezione--luogo {
+  padding-block: 0;
+  /* Stretta come le sezioni di testo. Con la larghezza piena della sezione
+     (62rem) la scheda diventava un cartoncino largo un metro con quattro
+     righe in mezzo, e il vuoto ai lati era piu` di quello che c'era scritto. */
+  max-width: var(--misura);
+}
+/* Due luoghi consecutivi non devono toccarsi.
+   Lo spazio sta sulla **scheda**, non sulla sezione. C'era una regola
+   `.sezione--luogo + .sezione--luogo` che non ha mai funzionato: ogni blocco
+   e` avvolto in un `.blocco-guscio`, quindi due sezioni non sono mai fratelli
+   adiacenti e il selettore `+` non ha mai trovato niente. Misurato: le due
+   schede distavano 0 pixel. */
+.luogo { margin-block: var(--sp-3); }
+/* Sul telefono le schede sono larghe quanto lo schermo e una sopra l'altra:
+   serve piu` stacco o si leggono come una scheda sola spezzata a meta`. */
+@media (max-width: 40rem) {
+  .luogo { margin-block: var(--sp-6); }
+}
+
+/* La scheda del luogo: un cartoncino appoggiato sulla pagina, non un
+   rettangolo disegnato sopra. Via il bordo — era una riga secca attorno a
+   niente — e al suo posto un'ombra larga e bassa piu` un filo inciso
+   all'interno, lo stesso che ha la lettera dentro la busta: e` il gesto che
+   lega la scheda al resto dell'invito invece di lasciarla un riquadro
+   qualunque. */
+.luogo {
+  position: relative;
+  background:
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--carta) 100%, transparent),
+      color-mix(in srgb, var(--fondo-alt) 45%, var(--carta)));
+  border-radius: calc(var(--raggio) + 3px);
+  padding: clamp(1.75rem, 4.5vw, 2.3rem) clamp(1.5rem, 5vw, 2.2rem);
+  text-align: center;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 18px 38px -26px rgb(0 0 0 / 0.35);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+.luogo:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 26px 48px -26px rgb(0 0 0 / 0.4);
+}
+/* Il filo inciso: sta dentro, staccato dal bordo. Un secondo bordo esterno
+   avrebbe solo raddoppiato il problema di prima. */
+.luogo__filo {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--bordo) 80%, transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* L'etichetta ("Cerimonia") fra due filetti: e` il modo in cui le
+   partecipazioni di carta segnano una voce senza aggiungere un titolo. */
+.luogo__etichetta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  justify-content: center;
+  margin: 0 0 var(--sp-4);
+  color: var(--accento);
+}
+.luogo__etichetta::before,
+.luogo__etichetta::after {
+  content: "";
+  flex: 1 1 0;
+  max-width: 3.5rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--accento) 45%, transparent);
+}
+
+.luogo h3 {
+  --misura-titolo: clamp(1.45rem, 4.5vw, 1.85rem);
+  font-size: var(--misura-titolo);
+}
+/* Stessa ragione della colonna orari del programma: e` un dato, va letto. */
+.luogo__ora {
+  margin: var(--sp-3) 0 0;
+  font-family: var(--ui);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: 1.02rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accento);
+}
+
+/* Un rombo fra due filetti: separa l'identita` del posto (nome e ora) dalle
+   istruzioni per arrivarci. Disegnato in CSS, nessun file da caricare. */
+.luogo__fregio {
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  margin: var(--sp-4) auto var(--sp-3);
+  background: color-mix(in srgb, var(--bordo) 90%, transparent);
+  position: relative;
+}
+.luogo__fregio::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  translate: -50% -50%;
+  rotate: 45deg;
+  background: var(--ornamento, var(--accento));
+}
+
+.luogo__indirizzo {
+  margin: 0 0 var(--sp-6);
+  color: var(--testo-tenue);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+/* Senza link alla mappa l'indirizzo e` l'ultima riga: quel margine sotto
+   restava a tenere il posto di un pulsante che non c'e`, e la scheda finiva
+   con un dito di vuoto in fondo. */
+.luogo__indirizzo:last-child { margin-bottom: 0; }
+
+/* ------------------------------------------------------------ galleria */
+
+.galleria-guscio { position: relative; }
+.galleria {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  /* `auto` e non `smooth`: qui deve scorrere il dito, con la sua inerzia.
+     Le frecce chiedono l'animazione da sole (`behavior: "smooth"`), mentre
+     un `smooth` scritto qui rallenterebbe anche il trascinamento. */
+  scroll-behavior: auto;
+  /* Le foto si agganciano al centro: senza questo margine, la prima e
+     l'ultima si incollano al bordo dello schermo. */
+  scroll-padding-inline: var(--sp-4);
+  scrollbar-width: none;
+  padding-bottom: var(--sp-1);
+}
+.galleria::-webkit-scrollbar { display: none; }
+.galleria figure { margin: 0; flex: 0 0 auto; width: min(74%, 17rem); scroll-snap-align: center; }
+.galleria img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: var(--fondo-alt);
+  border-radius: var(--raggio);
+}
+.galleria figcaption {
+  margin-top: var(--sp-2);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--testo-tenue);
+  text-align: center;
+}
+.galleria--griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  overflow: visible;
+}
+.galleria--griglia figure { width: auto; }
+
+.freccia {
+  position: absolute;
+  top: calc(50% - 1.5rem);
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-family: var(--display);
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--primario);
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.freccia:hover { background: var(--primario); color: var(--su-primario); }
+.freccia--sx { left: -0.5rem; }
+.freccia--dx { right: -0.5rem; }
+@media (hover: none) { .freccia { display: none; } }
+
+/* ----------------------------------------------------------- griglie */
+
+.griglia-auto {
+  display: grid;
+  gap: clamp(1rem, 3vw, 1.75rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+
+/* ---------------------------------------------------------------- nota */
+
+/* Il titolo della nota non sta piu` qui dentro: e` un `h2` figlio della
+   sezione, come in tutti gli altri blocchi. Quello che resta e` il corpo. */
+.nota { text-align: center; }
+.nota p { margin: 0; color: var(--testo-tenue); }
+
+/* ---------------------------------------------------------------- rsvp */
+
+.rsvp { background: var(--fondo-alt); max-width: none; }
+.rsvp > * { max-width: var(--misura); margin-inline: auto; }
+
+.modulo { display: grid; gap: var(--sp-6); margin-top: var(--sp-8); text-align: left; }
+
+.scelta { border: 0; padding: 0; margin: 0; display: grid; gap: var(--sp-3); grid-template-columns: 1fr 1fr; }
+.scelta legend { color: var(--testo-tenue); margin-bottom: var(--sp-3); padding: 0; }
+
+.pillola { position: relative; cursor: pointer; }
+.pillola input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.pillola span {
+  display: block;
+  text-align: center;
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  transition: background 200ms ease, color 200ms ease;
+}
+.pillola input:checked + span { background: var(--primario); border-color: var(--primario); color: var(--su-primario); }
+.pillola input:focus-visible + span { outline: 2px solid var(--accento); outline-offset: 3px; }
+
+.campo { display: grid; gap: var(--sp-2); }
+.campo > span { color: var(--testo-tenue); }
+.campo input, .campo textarea {
+  font-family: var(--ui);
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--testo);
+  background: var(--carta);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  padding: var(--sp-3) var(--sp-4);
+  width: 100%;
+  resize: vertical;
+}
+.campo input:focus, .campo textarea:focus {
+  outline: 0;
+  border-color: var(--primario-chiaro);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primario-chiaro) 22%, transparent);
+}
+.campo small { font-size: 0.8rem; color: var(--testo-tenue); }
+
+.bottone {
+  font-family: var(--ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--su-primario);
+  background: var(--primario);
+  border: 0;
+  border-radius: 999px;
+  padding: 1.1rem var(--sp-8);
+  cursor: pointer;
+  justify-self: center;
+  min-width: 15rem;
+}
+.bottone:hover { filter: brightness(1.12); }
+.bottone:disabled { opacity: 0.55; cursor: default; filter: none; }
+
+.bottone-lieve {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--primario);
+  text-decoration: none;
+  border: 1px solid var(--primario-chiaro);
+  border-radius: 999px;
+  padding: var(--sp-3) var(--sp-6);
+  cursor: pointer;
+  background: none;
+}
+.bottone-lieve:hover { background: var(--primario); color: var(--su-primario); }
+
+.esito { text-align: center; color: var(--testo-tenue); }
+.esito strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  font-size: 2rem;
+  color: var(--primario);
+  margin-bottom: var(--sp-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ================================================================ sipario */
+
+/* Quanto dura, in tutto, l'apertura della busta.
+ *
+ * `--lento` moltiplica **ogni** durata e ogni ritardo della sequenza: sigillo,
+ * lembo, lettera, sipario. Cambiare la velocita' dell'apertura e' cambiare
+ * questo numero, non dodici valori sparsi che poi si scoordinano fra loro.
+ *
+ * Chi lo cambia deve toccare anche `DURATA_APERTURA` in Sipario.tsx, che deve
+ * restare uguale alla fine dell'ultima animazione: 3100ms x --lento. */
+:root { --lento: 3; }
+
+/* La busta chiusa. Prende i colori del tema, così aprendola il tema
+   «compare» insieme all'invito. Opaca per davvero: con una gradiente
+   semi-trasparente l'invito sotto si intravedeva. */
+.sipario {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 50% 38%, var(--carta), var(--fondo-alt) 74%);
+  animation: sipario-entra calc(700ms * var(--lento)) ease both;
+}
+/* Il sipario se ne va solo dopo che la lettera e' uscita del tutto (1950ms) e
+   ha avuto il tempo di essere letta. Prima partiva a 1400ms, cioe' mentre la
+   lettera stava ancora salendo. */
+.sipario--via {
+  animation: sipario-esce calc(500ms * var(--lento)) calc(2100ms * var(--lento)) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+@keyframes sipario-entra { from { opacity: 0; } to { opacity: 1; } }
+
+/* L'invito sotto resta invisibile finche' la busta e' li'.
+ *
+ * Il difetto: `.sipario` nasce a opacita' zero e ci mette 700ms a comparire,
+ * quindi per mezzo secondo si vedeva l'invito — foto compresa — poi arrivava
+ * la busta a coprirlo, e all'apertura la foto ricompariva. Sembrava un errore
+ * di caricamento, ed era anche uno spoiler della sorpresa.
+ *
+ * `~` e non un contenitore nuovo: i blocchi sono fratelli del sipario dentro
+ * lo stesso genitore, e avvolgerli in un div li renderebbe diversi da come
+ * stanno nell'editor.
+ *
+ * Nell'editor questa regola non tocca niente: li` il sipario non esiste. */
+.sipario ~ * { opacity: 0; }
+
+/* E poi appare, con calma, mentre la busta se ne va.
+ *
+ * I tempi sono legati: la dissolvenza finisce a 3000ms e il sipario viene
+ * smontato a 3100 (DURATA_APERTURA in Sipario.tsx). Se finisse dopo, allo
+ * smontaggio questa regola smetterebbe di valere e il contenuto salterebbe
+ * di colpo a piena opacita' a meta' dissolvenza. */
+.sipario--via ~ * { animation: invito-appare calc(480ms * var(--lento)) calc(2100ms * var(--lento)) ease both; }
+@keyframes invito-appare { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sipario-esce {
+  from { opacity: 1; scale: 1; }
+  to { opacity: 0; scale: 1.08; visibility: hidden; }
+}
+
+.scena { display: grid; justify-items: center; gap: var(--sp-4); }
+
+.scena__tasto {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  /* La prospettiva vive qui: è ciò che fa ruotare il lembo nello spazio
+     invece di limitarsi a schiacciarlo. */
+  perspective: 1400px;
+}
+.scena__tasto:focus-visible { outline: 2px solid var(--accento); outline-offset: 12px; }
+
+.scena__invito {
+  margin: var(--sp-4) 0 0;
+  font-size: 0.74rem;
+  color: var(--primario);
+  animation: pulsa 2.6s ease-in-out infinite;
+}
+.scena__nota { margin: 0; font-size: 0.64rem; color: var(--testo-tenue); }
+@keyframes pulsa { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+.scena--apre .scena__invito,
+.scena--apre .scena__nota { animation: svanisci calc(300ms * var(--lento)) ease forwards; }
+@keyframes svanisci { to { opacity: 0; } }
+
+/* ------------------------------------------------------------- la busta */
+
+.busta {
+  position: relative;
+  width: min(27rem, 86vw);
+  aspect-ratio: 3 / 2;
+  transform-style: preserve-3d;
+  transition: transform 600ms ease;
+  filter: drop-shadow(0 26px 42px rgb(0 0 0 / 0.22));
+  /* Un filo storta apposta: la perfetta centratura geometrica legge
+     "modulo", una leggera imperfezione legge "fatta a mano". */
+  rotate: -1.3deg;
+}
+.scena__tasto:hover .busta { transform: translateY(-6px) rotateX(4deg); }
+.scena--apre .busta {
+  animation: busta-via calc(900ms * var(--lento)) calc(1100ms * var(--lento)) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes busta-via {
+  to { transform: translateY(26%) scale(0.86); opacity: 0; }
+}
+
+/* Corpo: il retro della busta, su cui poggia tutto il resto. */
+.busta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--raggio) + 2px);
+  background:
+    url("/ornamenti/grana.svg"),
+    var(--carta);
+  background-size: 200px 200px, auto;
+  background-blend-mode: multiply;
+  border: 1px solid var(--bordo);
+}
+
+/* Le tre falde del fronte. Ritagliate col clip-path: danno la V centrale
+   della busta reale, senza immagini. */
+.busta__lato,
+.busta__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: calc(var(--raggio) + 2px);
+}
+.busta__lato,
+.busta__fondo { filter: drop-shadow(0 0 0.6px var(--bordo)); }
+
+.busta__lato--sx {
+  background: color-mix(in srgb, var(--fondo-alt) 100%, transparent);
+  clip-path: polygon(0 0, 0 100%, 50% 50%);
+}
+.busta__lato--dx {
+  background: color-mix(in srgb, var(--fondo-alt) 78%, var(--carta));
+  clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+}
+.busta__fondo {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--fondo-alt) 92%, var(--testo) 8%),
+    var(--fondo-alt));
+  clip-path: polygon(0 100%, 50% 46%, 100% 100%);
+}
+
+/* Nome del destinatario, scritto sul fronte. */
+.busta__indirizzo {
+  position: absolute;
+  inset: auto 12% 12% 12%;
+  z-index: 4;
+  text-align: center;
+}
+.busta__nomi {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.2em;
+  margin: 0;
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  font-size: clamp(1.15rem, 4.6vw, 1.7rem);
+  line-height: 1.1;
+  color: var(--testo);
+}
+.busta__nomi > span { display: contents; }
+.scena--apre .busta__indirizzo { animation: svanisci calc(400ms * var(--lento)) ease forwards; }
+
+/* Il lembo superiore: ruota indietro attorno al bordo alto. A metà
+   animazione passa dietro al corpo, altrimenti resterebbe sopra la lettera
+   mentre esce. */
+.busta__lembo {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 54%;
+  z-index: 6;
+  transform-origin: top center;
+  backface-visibility: hidden;
+  background: linear-gradient(
+    to bottom,
+    var(--carta),
+    color-mix(in srgb, var(--fondo-alt) 55%, var(--carta)));
+  border-radius: calc(var(--raggio) + 2px) calc(var(--raggio) + 2px) 0 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.16));
+}
+.scena--apre .busta__lembo {
+  animation: lembo-apre calc(900ms * var(--lento)) calc(320ms * var(--lento)) cubic-bezier(0.45, 0.05, 0.2, 1) forwards;
+}
+@keyframes lembo-apre {
+  0%   { transform: rotateX(0deg); z-index: 6; }
+  49%  { z-index: 6; }
+  50%  { z-index: 1; }
+  100% { transform: rotateX(178deg); z-index: 1;
+         background: color-mix(in srgb, var(--fondo-alt) 96%, var(--testo) 4%); }
+}
+
+/* Il sigillo di cera, sulla punta del lembo. Si spacca prima che il lembo
+   si muova: è quello che dà il senso della busta che viene aperta. */
+.busta__sigillo {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  z-index: 7;
+  translate: -50% -50%;
+  width: clamp(3rem, 12vw, 3.9rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  /* Ceralacca verde oliva, con l'oro sopra.
+     Fissa e non presa dalla palette: la cera vera non cambia colore col tema.
+     E` lo stesso verde dell'immagine che si vede su WhatsApp e della favicon,
+     cosi` l'anteprima in chat, la scheda del browser e l'invito aperto
+     mostrano lo stesso oggetto. */
+  background: radial-gradient(circle at 38% 32%,
+      #7c8b4e 0%,
+      #56652f 58%,
+      #3b471d 100%);
+  /* Profilo a ciambella, non un bordo dentellato: anello esterno rialzato
+     (chiaro in alto, scuro in basso) e disco interno incassato dove sta il
+     monogramma. Tre inset concentrici, nessun clip-path. */
+  box-shadow:
+    inset 0 1.5px 1px rgb(255 255 255 / 0.3),
+    inset 0 -2px 3px rgb(24 32 10 / 0.45),
+    inset 0 0 0 0.32rem rgb(24 32 10 / 0.16);
+  /* Ombra portata netta e corta: un oggetto fisico sottile, non un alone. */
+  filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 0.35));
+}
+/* Il monogramma impresso nella cera, al posto delle iniziali di chi invita.
+   E` la stessa maschera che sta sotto ogni titolo di sezione.
+   Debossato: stesso colore della cera, il rilievo lo danno le due ombre
+   opposte — mai un colore a contrasto sopra la cera. */
+.busta__sigillo-simbolo {
+  width: 80%;
+  aspect-ratio: 498 / 170;
+  /* Oro, non piu` cera su cera. Il monogramma inciso nello stesso colore del
+     sigillo era coerente ma non si leggeva: un tratto calligrafico da un
+     pixel dentro un tondo di sessanta sparisce. Sfumatura invece di tinta
+     piatta: e` quello che distingue l'oro dal giallo.
+
+     La maschera e` la versione **ingrossata** (`av-spesso.png`, dilatata da
+     `strumenti/`): senza, anche in oro il tratto restava troppo sottile. */
+  background: linear-gradient(140deg, #f7e6b4 0%, #e2bc68 46%, #c69a3e 100%);
+  -webkit-mask: url("/ornamenti/av-spesso.png") center / contain no-repeat;
+  mask: url("/ornamenti/av-spesso.png") center / contain no-repeat;
+  /* Un'ombra corta sotto: stacca l'oro dalla cera e gli da` spessore. */
+  filter: drop-shadow(0 1px 1px rgb(24 32 10 / 0.6));
+}
+.scena--apre .busta__sigillo {
+  animation: sigillo-rompe calc(420ms * var(--lento)) cubic-bezier(0.3, 1.6, 0.5, 1) forwards;
+}
+@keyframes sigillo-rompe {
+  0%   { transform: scale(1) rotate(0deg); opacity: 1; }
+  35%  { transform: scale(1.16) rotate(-7deg); }
+  100% { transform: scale(0.4) rotate(16deg) translateY(38px); opacity: 0; }
+}
+
+/* La lettera: sta dentro la busta e sale quando il lembo è aperto. */
+.busta__lettera {
+  position: absolute;
+  inset: 6% 6% auto 6%;
+  z-index: 2;
+  transform: translateY(6%);
+}
+/* La lettera esce piu' lentamente, sale piu' in alto e si ingrandisce di piu':
+   prima era leggibile per mezzo secondo scarso, perche' il sipario cominciava
+   ad andarsene mentre lei stava ancora salendo. E non sbiadisce piu' a 0.92:
+   sbiadire il testo proprio nell'istante in cui lo si legge era il motivo
+   principale per cui non si capiva cosa ci fosse scritto. */
+.scena--apre .busta__lettera {
+  animation: lettera-esce calc(1250ms * var(--lento)) calc(700ms * var(--lento)) cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+}
+@keyframes lettera-esce {
+  0%   { transform: translateY(6%) scale(1); z-index: 2; }
+  1%   { z-index: 8; }
+  62%  { transform: translateY(-50%) scale(calc(var(--scala-lettera) * 0.92)); z-index: 8; }
+  100% { transform: translateY(-56%) scale(var(--scala-lettera)); z-index: 8; }
+}
+:root { --scala-lettera: 1.45; }
+/* Sotto i 34rem la busta e' larga l'86% dello schermo: la lettera dentro ne
+   e' l'88%, e ingrandirla di una volta e mezzo la manderebbe fuori dai bordi. */
+@media (max-width: 34rem) { :root { --scala-lettera: 1.24; } }
+
+.lettera {
+  position: relative;
+  padding: clamp(1.6rem, 5.5vw, 2.4rem) clamp(0.9rem, 3.5vw, 1.6rem) clamp(1.1rem, 4vw, 1.9rem);
+  text-align: center;
+  background:
+    url("/ornamenti/grana.svg"),
+    var(--carta);
+  background-size: 200px 200px, auto;
+  background-blend-mode: multiply;
+  border: 1px solid var(--bordo);
+  /* Arco in cima invece di un rettangolo netto: nessun prodotto osservato
+     chiude la lettera con quattro angoli identici. */
+  border-radius: 50% 50% calc(var(--raggio) * 0.6) calc(var(--raggio) * 0.6) /
+                 2.4rem 2.4rem calc(var(--raggio) * 0.6) calc(var(--raggio) * 0.6);
+  box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.3);
+}
+.lettera__filo {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--bordo);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.lettera__frase { margin: 0; font-size: 0.62rem; color: var(--primario); }
+.lettera__nomi {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.2em;
+  margin: var(--sp-2) 0 0;
+  font-family: var(--display);
+  font-weight: var(--peso-display);
+  --misura-titolo: clamp(1.5rem, 6vw, 2.3rem);
+  font-size: var(--misura-titolo);
+  line-height: 1.1;
+  color: var(--testo);
+}
+.lettera__nomi > span { display: contents; }
+/* La data sulla lettera che esce dalla busta usa il carattere da interfaccia,
+   non `--display`.
+   E` la stessa ragione degli orari del programma: `--display` lo sceglie
+   l'utente, e fra le voci ci sono tre corsivi calligrafici — "17 ottobre 2026"
+   in Pinyon o Tangerine non si legge. In piu` questa riga passa a schermo per
+   pochi secondi, dentro un'animazione, mentre la lettera si muove e si
+   ingrandisce: e` il posto dell'invito dove c'e` meno tempo per decifrare. */
+.lettera__data {
+  margin: var(--sp-2) 0 0;
+  font-family: var(--ui);
+  font-variant-numeric: lining-nums;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+
+/* Senza animazioni: la busta resta ferma e il sipario si limita a sparire. */
+@media (prefers-reduced-motion: reduce) {
+  .scena--apre .busta,
+  .scena--apre .busta__lembo,
+  .scena--apre .busta__sigillo,
+  .scena--apre .busta__lettera,
+  .scena--apre .busta__indirizzo,
+  .scena--apre .scena__invito,
+  .scena--apre .scena__nota { animation: none; }
+  /* Chi ha chiesto meno movimento non aspetta dieci secondi: qui la
+     sequenza non c'e' proprio, il sipario sfuma e basta. */
+  .sipario--via { animation: svanisci 200ms ease forwards; }
+  .scena__invito { animation: none; opacity: 1; }
+  /* Niente attesa di due secondi e mezzo per chi ha chiesto meno movimento:
+     qui il sipario sparisce in 200ms e l'invito e' subito leggibile. */
+  .sipario--via ~ * { animation: none; opacity: 1; }
+}
+
+/* La busta come blocco in linea nell'editor: niente sipario, niente tasto
+   "apri", solo la busta chiusa al suo posto nello scorrimento — la stessa
+   forma, ferma. L'animazione di apertura resta un'esclusiva dell'anteprima
+   e della pagina invitato. */
+.blocco-busta-inline {
+  display: flex;
+  justify-content: center;
+  padding: var(--sezione-y) var(--gutter);
+}
+
+/* ------------------------------------------ la carica prima dell'apertura */
+/* Un clic sulla busta e parte la carica: la busta trema, il sigillo si accende
+   e la ceralacca scricchiola (il fruscio e` sintetizzato: lib/fruscio.ts), poi
+   il lembo cede. `--pressione` va da 0 a 1 e arriva da Sipario.tsx a ogni
+   fotogramma. Si chiama ancora cosi` perche' e` la stessa animazione che prima
+   seguiva il dito premuto. */
+
+.scena--preme .busta {
+  /* Il tremito accelera e cresce con la pressione: all'inizio e` un fremito,
+     alla fine sembra che stia per cedere. */
+  animation: busta-tremito calc(150ms - var(--pressione, 0) * 60ms) linear infinite;
+  transition: none;
+}
+@keyframes busta-tremito {
+  0%   { transform: translate(0, 0) rotate(-1.3deg); }
+  25%  { transform: translate(calc(var(--pressione, 0) * -2.6px), calc(var(--pressione, 0) * 1.4px)) rotate(calc(-1.3deg - var(--pressione, 0) * 0.5deg)); }
+  50%  { transform: translate(calc(var(--pressione, 0) * 2.2px), calc(var(--pressione, 0) * -1.8px)) rotate(calc(-1.3deg + var(--pressione, 0) * 0.6deg)); }
+  75%  { transform: translate(calc(var(--pressione, 0) * -1.6px), calc(var(--pressione, 0) * -1.2px)) rotate(calc(-1.3deg + var(--pressione, 0) * 0.3deg)); }
+  100% { transform: translate(0, 0) rotate(-1.3deg); }
+}
+
+/* Il sigillo e` il punto che deve cedere: si carica di luce mentre si preme. */
+.scena--preme .busta__sigillo {
+  filter: brightness(calc(1 + var(--pressione, 0) * 0.28))
+          drop-shadow(0 0 calc(var(--pressione, 0) * 16px) rgb(155 58 47 / 0.55));
+  scale: calc(1 + var(--pressione, 0) * 0.06);
+}
+
+.scena__carica {
+  width: min(13rem, 60vw);
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--testo-tenue) 28%, transparent);
+  overflow: hidden;
+}
+.scena__carica span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--primario);
+  transform-origin: left center;
+  transform: scaleX(var(--pressione, 0));
+}
+
+/* Chi ha chiesto meno movimento salta la carica del tutto: il clic apre e
+   basta (lo decide Sipario.tsx, qui si spegne solo il tremito). */
+@media (prefers-reduced-motion: reduce) {
+  .scena--preme .busta { animation: none; }
+}
+
+/* --------------------------------------------------- disegno del dress code */
+/* Compare quando una nota si intitola "Dress code" (o simili): dice a colpo
+   d'occhio di cosa parla la sezione prima ancora di leggerla.
+
+   E` una maschera, non un'immagine: il colore arriva da `--decoro` e segue la
+   palette scelta dall'utente. Il file e` il disegno a tratto in
+   `public/ornamenti/dress-code.png`, ricavato dall'originale in `inputs/` con
+   `strumenti/maschera-linea.py` — li` dentro conta solo il canale alfa. */
+.nota--dress-code { text-align: center; }
+.disegno-dress-code {
+  display: block;
+  /* Piccolo: e` un segno che accompagna il titolo, non l'illustrazione della
+     sezione. Grande rubava la scena al testo, che e` la cosa che l'invitato
+     deve davvero leggere. */
+  width: min(10rem, 44%);
+  aspect-ratio: 947 / 908;
+  margin: var(--sp-4) auto var(--sp-3);
+  /* Spostato a sinistra del 15% della propria larghezza rispetto al centro.
+     Con `translate` e non con un margine negativo: il margine cambierebbe lo
+     spazio che l'elemento occupa e trascinerebbe con se' il testo sotto,
+     mentre qui si sposta soltanto il disegno. */
+  translate: -15% 0;
+  background-color: var(--decoro, var(--primario));
+  -webkit-mask: url("/ornamenti/dress-code.png") center / contain no-repeat;
+  mask: url("/ornamenti/dress-code.png") center / contain no-repeat;
+  opacity: 0.85;
+}
+
+/* --------------------------------------------- spunta "vengo accompagnato" */
+/* Riquadro e non solo casella: il modulo e` centrato e a caselle nude la
+   spunta si perdeva fra i campi. Cliccabile su tutta la riga, che sul telefono
+   e` la differenza fra spuntarla e mancarla. */
+.spunta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--bordo);
+  border-radius: var(--raggio);
+  background: var(--carta);
+  cursor: pointer;
+  text-align: left;
+}
+.spunta input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--primario);
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.spunta span { font-size: 0.95rem; }
+.spunta:has(input:checked) { border-color: var(--primario); }

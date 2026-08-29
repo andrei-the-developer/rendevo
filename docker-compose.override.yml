@@ -1,0 +1,39 @@
+# Override per il deploy su questo server (m2 / rendevo.eu).
+# Non tocca docker-compose.yml, che resta la descrizione "canonica" dello
+# stack (compreso il percorso S3/MinIO, oggi incompleto).
+#
+# Perché qui:
+# - Caddy di sistema (/etc/caddy/Caddyfile) fa già da reverse proxy con TLS
+#   automatico su :80/:443 per rendevo.eu. Il servizio "proxy" del
+#   compose (un secondo Caddy che vorrebbe anche lui le porte 80/443)
+#   andrebbe in conflitto, quindi resta dietro il profilo "bundled-proxy"
+#   e non parte di default.
+# - "minio" resta dietro il profilo "s3": INVITI_STORAGE=s3 richiede boto3,
+#   che non è in requisiti.txt, oltre a un bootstrap del bucket e a una
+#   rotta /media su Caddy verso MinIO — nessuna delle tre esiste ancora.
+#   Storage locale (già verificato in sviluppo) finché qualcuno non
+#   completa quei tre pezzi. Vedi PASSAGGIO_DI_CONSEGNE.md.
+services:
+  proxy:
+    profiles: ["bundled-proxy"]
+
+  minio:
+    profiles: ["s3"]
+
+  api:
+    environment:
+      INVITI_STORAGE: locale
+    depends_on: !override
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports:
+      # 8001 e non 8000: il progetto inviti-v2 gira sulla stessa macchina e
+      # tiene la 8000. Sono due stack indipendenti, non due repliche.
+      - "127.0.0.1:8001:8000"
+    volumes:
+      - ./dati-produzione/upload:/app/dati/upload
+
+  web:
+    ports:
+      # 3001 per la stessa ragione della 8001.
+      - "127.0.0.1:3001:3000"

@@ -1,0 +1,104 @@
+# Ambiente di deploy self-hosted. In sviluppo su questa macchina i servizi
+# girano nativi (niente demone Docker disponibile): vedi README.
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: inviti
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?serve POSTGRES_PASSWORD}
+      POSTGRES_DB: inviti
+    volumes:
+      # postgres:18+ vuole un mount a /var/lib/postgresql (non .../data):
+      # gestisce da sé la sottodirectory versionata. Un mount diretto su
+      # .../data fa fallire l'avvio ("unused mount/volume").
+      - dati_db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inviti -d inviti"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:8-alpine
+    command: redis-server --save 60 1 --appendonly no
+    volumes:
+      - dati_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER:?serve MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:?serve MINIO_PASSWORD}
+    volumes:
+      - dati_minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    environment:
+      INVITI_DATABASE_URL: postgresql+psycopg://inviti:${POSTGRES_PASSWORD}@db:5432/inviti
+      INVITI_REDIS_URL: redis://redis:6379/0
+      INVITI_SEGRETO: ${SEGRETO:?serve SEGRETO}
+      INVITI_STORAGE: s3
+      INVITI_S3_ENDPOINT: http://minio:9000
+      INVITI_S3_ACCESS_KEY: ${MINIO_USER}
+      INVITI_S3_SECRET_KEY: ${MINIO_PASSWORD}
+      INVITI_ORIGINI_CORS: '["https://${DOMINIO:?serve DOMINIO}"]'
+      # Non richieste con `:?`: a differenza di SEGRETO/DOMINIO, l'app deve
+      # continuare a funzionare (editor, RSVP, tutto il resto) anche senza
+      # Stripe configurato. Mancanti = solo /api/eventi/{id}/pagamento e
+      # /api/stripe/webhook rispondono un errore esplicito (vedi
+      # pagamenti.py), non un crash dell'intero container.
+      INVITI_STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      INVITI_STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      INVITI_STRIPE_PRICE_ID: ${STRIPE_PRICE_ID:-}
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      minio: { condition: service_healthy }
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    environment:
+      # Lato server il frontend parla all'API sulla rete interna; il browser
+      # la raggiunge invece attraverso il reverse proxy.
+      API_INTERNA: http://api:8000
+      NEXT_PUBLIC_BASE_URL: https://${DOMINIO}
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  proxy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - dati_caddy:/data
+      - config_caddy:/config
+    depends_on:
+      - web
+      - api
+    restart: unless-stopped
+
+volumes:
+  dati_db:
+  dati_redis:
+  dati_minio:
+  dati_caddy:
+  config_caddy:

@@ -1,0 +1,19 @@
+# TLS automatico. DOMINIO va sostituito o passato via variabile d'ambiente.
+{$DOMINIO} {
+	encode zstd gzip
+
+	# L'API sta sotto /api: un solo dominio, nessun CORS in produzione.
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

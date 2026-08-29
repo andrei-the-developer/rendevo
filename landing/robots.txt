@@ -1,0 +1,10 @@
+# La landing si', l'applicazione no. Le pagine invito contengono nomi, date e
+# indirizzi di persone vere: non devono finire in un motore di ricerca.
+# Questo file e` una richiesta, non un lucchetto: il divieto vero e`
+# l'header `X-Robots-Tag: noindex` messo da Caddy sulle stesse rotte.
+User-agent: *
+Allow: /$
+Disallow: /i/
+Disallow: /e/
+Disallow: /edit
+Disallow: /api/

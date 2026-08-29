@@ -1,0 +1,29 @@
+# Segreti — mai nel repository.
+.env
+.env.bak-*
+
+# Dati di persone vere: le foto caricate dagli invitati. Non sono codice, e
+# una volta entrate nella storia di git non si tolgono piu'.
+dati-produzione/
+
+# Immagini sorgente di Andrei (fiori, monogramma, dress code). Da queste si
+# generano gli ornamenti in frontend/public/, che invece stanno nel repo.
+inputs/
+
+# Dump del database e archivi di backup.
+*.sql
+*.tar.gz
+*.tgz
+
+# Roba rigenerabile.
+node_modules/
+.next/
+out/
+next-env.d.ts
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+backend/dati/
+
+.DS_Store
