@@ -1,9 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-
-const CHIAVE = "consenso-clarity";
+import { useEffect } from "react";
 
 /** Snippet ufficiale di Microsoft Clarity (installazione "Manual"): non solo
  *  accoda lo script, definisce anche `window.clarity` come una coda che
@@ -27,53 +24,15 @@ function iniettaClarity(id: string) {
   /* eslint-enable */
 }
 
-/** Microsoft Clarity registra sessioni video (schermo, click, scorrimento):
- *  per il GDPR non parte prima di un consenso esplicito, non basta
- *  menzionarlo nei Termini. Stessa chiave di localStorage usata dalla
- *  landing statica (vedi landing/index.html): un solo consenso per tutto
- *  il sito, non uno per l'app e uno per la landing. */
+/** SENZA BANNER PER SCELTA DI ANDREI, per ora: Clarity parte sempre, senza
+ *  chiedere consenso. Non è la configurazione finale — il banner
+ *  "Accetta/Rifiuta" (con le sue traduzioni in `messages/*.json` e lo
+ *  stile `.banner-cookie` in `guscio.css`) torna quando lo si rimette qui,
+ *  vedi la cronologia git di questo file per la versione con il gate. */
 export function ConsensoCookie({ clarityId }: { clarityId: string }) {
-  const t = useTranslations("Cookie");
-  const [scelta, setScelta] = useState<"accettato" | "rifiutato" | null>("accettato");
-
   useEffect(() => {
-    const salvata = localStorage.getItem(CHIAVE);
-    if (salvata === "accettato" || salvata === "rifiutato") {
-      setScelta(salvata);
-      if (salvata === "accettato" && clarityId) iniettaClarity(clarityId);
-    } else {
-      setScelta(null);
-    }
+    if (clarityId) iniettaClarity(clarityId);
   }, [clarityId]);
 
-  if (!clarityId || scelta !== null) return null;
-
-  function scegli(valore: "accettato" | "rifiutato") {
-    localStorage.setItem(CHIAVE, valore);
-    setScelta(valore);
-    if (valore === "accettato") iniettaClarity(clarityId);
-  }
-
-  return (
-    <div className="banner-cookie" role="region" aria-label={t("dettagli")}>
-      <p>
-        {t("testo")}{" "}
-        <a href="/termini" target="_blank" rel="noopener noreferrer">
-          {t("dettagli")}
-        </a>
-      </p>
-      <div className="banner-cookie__azioni">
-        <button type="button" className="tasto-popup" onClick={() => scegli("rifiutato")}>
-          {t("rifiuta")}
-        </button>
-        <button
-          type="button"
-          className="tasto-popup tasto-popup--primario"
-          onClick={() => scegli("accettato")}
-        >
-          {t("accetta")}
-        </button>
-      </div>
-    </div>
-  );
+  return null;
 }

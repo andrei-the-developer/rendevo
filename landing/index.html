@@ -746,29 +746,12 @@ footer .separatore { margin: 0 0.5rem; opacity: 0.6; }
     })(window, document, "clarity", "script", CLARITY_ID);
   }
 
-  if (CLARITY_ID) {
-    var consenso = null;
-    try { consenso = localStorage.getItem(CHIAVE_CONSENSO); } catch (e) { /* storage bloccato: niente banner */ }
-    if (consenso === "accettato") {
-      iniettaClarity();
-    } else if (consenso !== "rifiutato" && consenso !== null) {
-      // valore imprevisto: si comporta come "non ancora scelto"
-      consenso = null;
-    }
-    if (consenso === null) {
-      var banner = document.getElementById("banner-cookie");
-      banner.hidden = false;
-      document.getElementById("cookie-accetta").addEventListener("click", function () {
-        try { localStorage.setItem(CHIAVE_CONSENSO, "accettato"); } catch (e) {}
-        banner.hidden = true;
-        iniettaClarity();
-      });
-      document.getElementById("cookie-rifiuta").addEventListener("click", function () {
-        try { localStorage.setItem(CHIAVE_CONSENSO, "rifiutato"); } catch (e) {}
-        banner.hidden = true;
-      });
-    }
-  }
+  // SENZA BANNER PER SCELTA DI ANDREI, per ora: Clarity parte sempre, senza
+  // chiedere consenso. Non e' la configurazione finale — il banner
+  // "Accetta/Rifiuta" (l'elemento #banner-cookie qui sopra nell'HTML resta
+  // al suo posto, solo nascosto) torna rimettendo qui la logica di
+  // CHIAVE_CONSENSO: vedi la cronologia git di questo file.
+  if (CLARITY_ID) iniettaClarity();
 })();
 </script>
 
