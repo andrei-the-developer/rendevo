@@ -51,7 +51,8 @@
     "erroreEmailEsistente": "An account with this email already exists. Switch to Sign in.",
     "erroreTroppiTentativi": "Too many attempts in a row. Wait a few minutes and try again.",
     "erroreRete": "Can't reach the server. Check your connection.",
-    "erroreGenerico": "Something went wrong."
+    "erroreGenerico": "Something went wrong.",
+    "codiceInvito": "Invite code (optional)"
   },
   "Edit": {
     "preparo": "Preparing your invitation…",

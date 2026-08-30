@@ -17,7 +17,7 @@ from . import servizi, storage
 from .config import impostazioni
 from .db import sessione as dip_db
 from .modelli import Asset as ModelloAsset
-from .modelli import Evento, LinkCondivisione, Rsvp as ModelloRsvp, Sessione, Utente
+from .modelli import CodiceInvito, Evento, LinkCondivisione, Rsvp as ModelloRsvp, Sessione, Utente
 from .sessioni import sessione_corrente
 
 app = FastAPI(title="Inviti digitali", version="2.0.0-dev")
@@ -69,6 +69,13 @@ class ReimpostaPassword(BaseModel):
 class DatiAuth(BaseModel):
     email: str = Field(max_length=320)
     password: str = Field(min_length=8, max_length=200)
+
+
+class DatiRegistrazione(DatiAuth):
+    # Facoltativo, e sbagliarlo non blocca la registrazione: chi lo scrive a
+    # mano da un'email puo' fare un errore di battitura, e non e' colpa sua
+    # se perde uno sconto per questo — la registrazione va avanti comunque.
+    codice: str | None = Field(default=None, max_length=40)
 
 
 # --------------------------------------------------------------- limite login
@@ -189,7 +196,7 @@ async def chi_sono(
 
 @app.post("/api/auth/registrati", status_code=201)
 async def registrati(
-    corpo: DatiAuth,
+    corpo: DatiRegistrazione,
     db: Session = Depends(dip_db),
     ses: Sessione = Depends(sessione_corrente),
 ) -> dict:
@@ -198,6 +205,21 @@ async def registrati(
         raise HTTPException(400, "Indirizzo email non valido")
 
     utente = Utente(email=email, hash_password=auth.cripta_password(corpo.password))
+
+    # Un codice sbagliato o scaduto non blocca la registrazione: si registra
+    # comunque, solo senza l'attribuzione/lo sconto.
+    codice_applicato = False
+    if corpo.codice:
+        riga = db.scalars(
+            select(CodiceInvito).where(
+                CodiceInvito.codice == corpo.codice.strip().upper(),
+                CodiceInvito.attivo.is_(True),
+            )
+        ).first()
+        if riga is not None:
+            utente.codice_invito_id = riga.id
+            codice_applicato = True
+
     db.add(utente)
     try:
         db.flush()
@@ -208,7 +230,7 @@ async def registrati(
     # Chi si registra avendo già un invito anonimo in corso non deve perderlo.
     auth.collega_sessione_a_utente(db, ses, utente)
     db.commit()
-    return _utente_json(utente)
+    return {**_utente_json(utente), "codice_applicato": codice_applicato}
 
 
 @app.post("/api/auth/accedi")

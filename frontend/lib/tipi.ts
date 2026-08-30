@@ -198,6 +198,9 @@ export interface Utente {
 
 export interface ChiSono {
   utente: Utente | null;
+  /** Solo dopo /api/auth/registrati con un codice: dice se l'ha trovato e
+   *  applicato, per mostrarlo nel modulo. Assente altrove. */
+  codice_applicato?: boolean;
 }
 
 // Operazioni accettate da POST /api/eventi/{id}/operazioni

@@ -48,10 +48,14 @@ export function caricaAsset(eventoId: string, file: File): Promise<AssetCaricato
   return carica<AssetCaricato>(`/api/eventi/${eventoId}/asset`, corpo);
 }
 
-export function registrati(email: string, password: string): Promise<ChiSono> {
+export function registrati(
+  email: string,
+  password: string,
+  codice?: string,
+): Promise<ChiSono> {
   return chiamaClient<ChiSono>("/api/auth/registrati", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, codice: codice || undefined }),
   });
 }
 

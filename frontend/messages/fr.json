@@ -51,7 +51,8 @@
     "erroreEmailEsistente": "Un compte existe déjà avec cette adresse e-mail. Passez à Se connecter.",
     "erroreTroppiTentativi": "Trop de tentatives d’affilée. Attendez quelques minutes puis réessayez.",
     "erroreRete": "Impossible de joindre le serveur. Vérifiez votre connexion.",
-    "erroreGenerico": "Une erreur s’est produite."
+    "erroreGenerico": "Une erreur s’est produite.",
+    "codiceInvito": "Code d'invitation (facultatif)"
   },
   "Edit": {
     "preparo": "Préparation de votre invitation…",

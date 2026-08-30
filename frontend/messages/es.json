@@ -51,7 +51,8 @@
     "erroreEmailEsistente": "Ya existe una cuenta con este correo electrónico. Pasa a Iniciar sesión.",
     "erroreTroppiTentativi": "Demasiados intentos seguidos. Espera unos minutos y vuelve a intentarlo.",
     "erroreRete": "No se puede contactar con el servidor. Comprueba tu conexión.",
-    "erroreGenerico": "Algo salió mal."
+    "erroreGenerico": "Algo salió mal.",
+    "codiceInvito": "Código de invitación (opcional)"
   },
   "Edit": {
     "preparo": "Preparando tu invitación…",

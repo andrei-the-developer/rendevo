@@ -51,7 +51,8 @@
     "erroreEmailEsistente": "Esiste già un account con questa email. Passa ad Accedi.",
     "erroreTroppiTentativi": "Troppi tentativi di seguito. Aspetta qualche minuto e riprova.",
     "erroreRete": "Non riesco a raggiungere il server. Controlla la connessione.",
-    "erroreGenerico": "Operazione non riuscita."
+    "erroreGenerico": "Operazione non riuscita.",
+    "codiceInvito": "Codice invito (facoltativo)"
   },
   "Edit": {
     "preparo": "Preparo il tuo invito…",

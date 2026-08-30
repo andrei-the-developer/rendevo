@@ -51,7 +51,8 @@
     "erroreEmailEsistente": "Für diese E-Mail-Adresse besteht bereits ein Konto. Wechsle zu Anmelden.",
     "erroreTroppiTentativi": "Zu viele Versuche hintereinander. Warte ein paar Minuten und versuche es erneut.",
     "erroreRete": "Der Server ist nicht erreichbar. Überprüfe deine Verbindung.",
-    "erroreGenerico": "Vorgang fehlgeschlagen."
+    "erroreGenerico": "Vorgang fehlgeschlagen.",
+    "codiceInvito": "Einladungscode (optional)"
   },
   "Edit": {
     "preparo": "Deine Einladung wird vorbereitet…",

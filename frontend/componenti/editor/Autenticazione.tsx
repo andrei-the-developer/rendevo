@@ -21,6 +21,7 @@ export function Autenticazione({
   const [inviato, setInviato] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [codice, setCodice] = useState("");
   const [inCorso, setInCorso] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
   const idTitolo = useId();
@@ -59,7 +60,7 @@ export function Autenticazione({
         return;
       }
       const risposta =
-        modo === "accedi" ? await accedi(email, password) : await registrati(email, password);
+        modo === "accedi" ? await accedi(email, password) : await registrati(email, password, codice);
       if (risposta.utente) onAutenticato(risposta.utente);
     } catch (err) {
       // 409 = email gia` registrata. E` l'errore piu` facile da prendere, ed e`
@@ -158,6 +159,18 @@ export function Autenticazione({
               />
               {modo === "registrati" && <small>{t("passwordSuggerimento")}</small>}
             </label>
+            )}
+
+            {modo === "registrati" && (
+              <label className="campo-popup">
+                <span>{t("codiceInvito")}</span>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  value={codice}
+                  onChange={(e) => setCodice(e.target.value)}
+                />
+              </label>
             )}
 
             {modo === "accedi" && (

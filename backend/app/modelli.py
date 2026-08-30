@@ -40,8 +40,40 @@ class Utente(Base):
     email_verificata_il: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    # (vedi CodiceInvito piu' sotto per il significato)
+    # Con quale codice si e' registrato, se l'ha usato: serve per sapere a chi
+    # attribuire una commissione quando il servizio smettera' di essere
+    # gratuito. `SET NULL` e non `CASCADE`: cancellare un codice non deve
+    # cancellare gli utenti che l'hanno usato, solo scollegarli.
+    codice_invito_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("codice_invito.id", ondelete="SET NULL"), nullable=True, index=True
+    )
 
     eventi: Mapped[list["Evento"]] = relationship(back_populates="proprietario_utente")
+    codice_invito: Mapped["CodiceInvito | None"] = relationship(back_populates="utenti")
+
+
+class CodiceInvito(Base):
+    """Un codice dato in mano a un organizzatore/influencer: chi si registra
+    con questo codice gli viene attribuito. Oggi Rendevo e' gratuito, quindi
+    non c'e' ancora nessuna commissione da calcolare — questa tabella esiste
+    solo per non perdere l'attribuzione fin da subito, cosi' quando arrivera'
+    un piano a pagamento la storia di chi ha portato chi c'e' gia'."""
+
+    __tablename__ = "codice_invito"
+
+    id: Mapped[uuid.UUID] = _id()
+    codice: Mapped[str] = mapped_column(String(40), unique=True, index=True)
+    # Chi e', per riconoscerlo a occhio in un elenco: non e' mostrato a nessuno.
+    etichetta: Mapped[str] = mapped_column(String(160))
+    # Lo sconto (in centesimi) che chi si registra con questo codice avra' sul
+    # prezzo, quando ci sara' un prezzo. Zero e' un codice puramente di
+    # attribuzione, senza sconto.
+    sconto_centesimi: Mapped[int] = mapped_column(Integer, default=0)
+    attivo: Mapped[bool] = mapped_column(Boolean, default=True)
+    creato_il: Mapped[datetime] = _adesso()
+
+    utenti: Mapped[list["Utente"]] = relationship(back_populates="codice_invito")
 
 
 class Sessione(Base):
