@@ -7,13 +7,17 @@ Uso, da dentro il container:
         "Marco - wedding planner Milano" --sconto 10
 
     docker compose exec api python -m app.gestione elenca-codici
+
+    docker compose exec api python -m app.gestione imposta-ruolo \
+        andrei@esempio.it pro
 """
 
 import argparse
 import sys
 
 from .db import CreaSessione
-from .modelli import CodiceInvito
+from .modelli import CodiceInvito, Utente
+from .servizi import LIMITI_RUOLO
 
 
 def crea_codice(codice: str, etichetta: str, sconto_euro: float) -> None:
@@ -61,6 +65,22 @@ def disattiva_codice(codice: str) -> None:
         print(f"Disattivato: {codice}")
 
 
+def imposta_ruolo(email: str, ruolo: str) -> None:
+    if ruolo not in LIMITI_RUOLO:
+        ammessi = ", ".join(LIMITI_RUOLO)
+        print(f"Ruolo sconosciuto {ruolo!r}. Ammessi: {ammessi}", file=sys.stderr)
+        raise SystemExit(1)
+    with CreaSessione() as db:
+        utente = db.query(Utente).filter_by(email=email.strip().lower()).first()
+        if utente is None:
+            print(f"Nessun account con l'email {email!r}", file=sys.stderr)
+            raise SystemExit(1)
+        vecchio = utente.ruolo
+        utente.ruolo = ruolo
+        db.commit()
+        print(f"{email}: {vecchio} -> {ruolo} (limite {LIMITI_RUOLO[ruolo]} inviti)")
+
+
 def main() -> None:
     p = argparse.ArgumentParser(prog="gestione")
     sotto = p.add_subparsers(dest="comando", required=True)
@@ -75,6 +95,10 @@ def main() -> None:
     p_disattiva = sotto.add_parser("disattiva-codice", help="Disattiva un codice invito")
     p_disattiva.add_argument("codice")
 
+    p_ruolo = sotto.add_parser("imposta-ruolo", help="Cambia il ruolo (piano) di un account")
+    p_ruolo.add_argument("email")
+    p_ruolo.add_argument("ruolo", choices=sorted(LIMITI_RUOLO))
+
     args = p.parse_args()
     if args.comando == "crea-codice":
         crea_codice(args.codice, args.etichetta, args.sconto)
@@ -82,6 +106,8 @@ def main() -> None:
         elenca_codici()
     elif args.comando == "disattiva-codice":
         disattiva_codice(args.codice)
+    elif args.comando == "imposta-ruolo":
+        imposta_ruolo(args.email, args.ruolo)
 
 
 if __name__ == "__main__":

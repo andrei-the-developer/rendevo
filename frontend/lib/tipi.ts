@@ -194,6 +194,10 @@ export interface ModelloEvento {
 
 export interface Utente {
   email: string;
+  /** "base" | "pro" — decide limite_inviti. Stringa e non un'unione stretta:
+   *  un ruolo futuro non ancora previsto qui non deve rompere il tipo. */
+  ruolo: string;
+  limite_inviti: number;
 }
 
 export interface ChiSono {

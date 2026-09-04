@@ -23,7 +23,8 @@
     "nessunAltro": "Aucune autre invitation",
     "senzaNome": "Invitation sans nom",
     "nuovoInvito": "+ Nouvelle invitation",
-    "creando": "Création…"
+    "creando": "Création…",
+    "erroreGenerico": "Impossible de créer l'invitation."
   },
   "Auth": {
     "titoloAccedi": "Se connecter",

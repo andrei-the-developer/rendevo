@@ -23,7 +23,8 @@
     "nessunAltro": "No hay más invitaciones",
     "senzaNome": "Invitación sin nombre",
     "nuovoInvito": "+ Nueva invitación",
-    "creando": "Creando…"
+    "creando": "Creando…",
+    "erroreGenerico": "No se pudo crear la invitación."
   },
   "Auth": {
     "titoloAccedi": "Iniciar sesión",

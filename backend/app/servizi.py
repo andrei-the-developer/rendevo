@@ -12,14 +12,20 @@ from datetime import UTC, datetime
 from urllib.parse import urlparse
 
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from . import blocchi as tipi_blocco
 from . import storage
-from .modelli import Asset, Blocco, Evento, LinkCondivisione
+from .modelli import Asset, Blocco, Evento, LinkCondivisione, Sessione, Utente
 
 PASSO = 1000.0
+
+# Quanti inviti insieme puo' avere ciascun ruolo. Chi non ha ancora un
+# account (sessione anonima) non ha un ruolo: resta al limite piu' basso,
+# quello implicito di sempre prima che esistesse il multi-invito.
+LIMITE_ANONIMO = 1
+LIMITI_RUOLO = {"base": 2, "pro": 10}
 
 
 class ErroreOperazione(Exception):
@@ -28,6 +34,25 @@ class ErroreOperazione(Exception):
 
 class Conflitto(Exception):
     """Qualcun altro ha scritto dopo l'ultima lettura del client."""
+
+
+class LimiteRaggiunto(Exception):
+    """Il proprietario ha gia' il massimo di inviti permessi dal suo piano."""
+
+
+def limite_inviti(utente: Utente | None) -> int:
+    if utente is None:
+        return LIMITE_ANONIMO
+    return LIMITI_RUOLO.get(utente.ruolo, LIMITI_RUOLO["base"])
+
+
+def _conta_eventi_proprietario(db: Session, ses: Sessione) -> int:
+    # Stessa condizione di GET /api/eventi: conta quello che vede lì, non di
+    # più e non di meno.
+    condizione = Evento.proprietario_sessione_id == ses.id
+    if ses.utente_id is not None:
+        condizione = condizione | (Evento.proprietario_utente_id == ses.utente_id)
+    return db.scalar(select(func.count()).select_from(Evento).where(condizione)) or 0
 
 
 # ---------------------------------------------------------------- creazione
@@ -51,7 +76,14 @@ def _semina_asset(db: Session, evento_id, nome_tessera: str) -> Asset:
     return asset
 
 
-def crea_evento(db: Session, tipo: str, sessione_id: uuid.UUID) -> Evento:
+def crea_evento(db: Session, tipo: str, ses: Sessione) -> Evento:
+    utente = db.get(Utente, ses.utente_id) if ses.utente_id else None
+    limite = limite_inviti(utente)
+    if _conta_eventi_proprietario(db, ses) >= limite:
+        raise LimiteRaggiunto(
+            f"Hai raggiunto il limite di {limite} inviti per il tuo piano."
+        )
+
     try:
         predefiniti = tipi_blocco.blocchi_predefiniti(tipo)
     except KeyError:
@@ -63,7 +95,7 @@ def crea_evento(db: Session, tipo: str, sessione_id: uuid.UUID) -> Evento:
         tema=modello["tema"],
         palette=modello["palette"],
         titolo_interno=modello["etichetta"],
-        proprietario_sessione_id=sessione_id,
+        proprietario_sessione_id=ses.id,
     )
     db.add(evento)
     db.flush()

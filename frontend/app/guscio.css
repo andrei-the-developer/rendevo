@@ -1051,6 +1051,7 @@ a.tasto-barra { text-decoration: none; display: inline-flex; align-items: center
 /* ------------------------------------------------------- elenco inviti */
 .scelta-invito__stato { padding: 0.45rem 0.6rem; color: #7a7f82; font-size: 0.8rem; }
 .scelta-invito__separatore { height: 1px; margin: 0.3rem 0.2rem; background: #e4e0d8; }
+.scelta-invito__errore { padding: 0.4rem 0.6rem 0.2rem; color: #a8524a; font-size: 0.8rem; }
 
 /* Il nome dell'invito, rinominabile sul posto: un campo di testo che si
    comporta da etichetta finche' non lo si tocca. */

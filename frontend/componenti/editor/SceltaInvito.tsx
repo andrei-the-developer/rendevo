@@ -20,6 +20,7 @@ export function SceltaInvito({ correnteId }: { correnteId: string }) {
   const [aperto, setAperto] = useState(false);
   const [eventi, setEventi] = useState<VoceEvento[] | null>(null);
   const [creando, setCreando] = useState(false);
+  const [errore, setErrore] = useState<string | null>(null);
   const guscio = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,12 +51,18 @@ export function SceltaInvito({ correnteId }: { correnteId: string }) {
 
   async function nuovoInvito() {
     setCreando(true);
+    setErrore(null);
     try {
       const nuovo = await chiamaClient<{ id: string }>("/api/eventi", {
         method: "POST",
         body: JSON.stringify({ tipo: "matrimonio" }),
       });
       router.push(`/e/${nuovo.id}`);
+    } catch (e) {
+      // Il messaggio arriva gia' pronto dal backend (es. "Hai raggiunto il
+      // limite di 2 inviti per il tuo piano"): stesso approccio usato per
+      // gli altri errori del server in tutta l'app, vedi Autenticazione.tsx.
+      setErrore(e instanceof Error ? e.message : t("erroreGenerico"));
     } finally {
       setCreando(false);
     }
@@ -100,6 +107,7 @@ export function SceltaInvito({ correnteId }: { correnteId: string }) {
               {creando ? t("creando") : t("nuovoInvito")}
             </button>
           </li>
+          {errore && <li className="scelta-invito__errore">{errore}</li>}
         </ul>
       )}
     </div>

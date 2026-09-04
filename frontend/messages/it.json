@@ -23,7 +23,8 @@
     "nessunAltro": "Nessun altro invito",
     "senzaNome": "Invito senza nome",
     "nuovoInvito": "+ Nuovo invito",
-    "creando": "Creo…"
+    "creando": "Creo…",
+    "erroreGenerico": "Non riesco a creare l'invito."
   },
   "Auth": {
     "titoloAccedi": "Accedi",

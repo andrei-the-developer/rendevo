@@ -182,7 +182,15 @@ async def salute() -> dict:
 # ---------------------------------------------------------------- autenticazione
 
 def _utente_json(u: Utente | None) -> dict:
-    return {"utente": {"email": u.email} if u else None}
+    if u is None:
+        return {"utente": None}
+    return {
+        "utente": {
+            "email": u.email,
+            "ruolo": u.ruolo,
+            "limite_inviti": servizi.limite_inviti(u),
+        }
+    }
 
 
 @app.get("/api/auth/chi_sono")
@@ -394,7 +402,9 @@ async def crea_evento(
     ses: Sessione = Depends(sessione_corrente),
 ) -> dict:
     try:
-        evento = servizi.crea_evento(db, corpo.tipo, ses.id)
+        evento = servizi.crea_evento(db, corpo.tipo, ses)
+    except servizi.LimiteRaggiunto as e:
+        raise HTTPException(403, str(e))
     except servizi.ErroreOperazione as e:
         raise HTTPException(400, str(e))
     return _evento_json(evento, db)

@@ -32,11 +32,18 @@ def _adesso() -> Mapped[datetime]:
 
 class Utente(Base):
     __tablename__ = "utente"
+    __table_args__ = (
+        CheckConstraint("ruolo IN ('base', 'pro')", name="utente_ruolo_valido"),
+    )
 
     id: Mapped[uuid.UUID] = _id()
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
     hash_password: Mapped[str] = mapped_column(String(255))
     creato_il: Mapped[datetime] = _adesso()
+    # Decide quanti inviti puo' avere insieme (vedi LIMITI_RUOLO in
+    # servizi.py) — oggi si cambia solo a mano (gestione.py imposta-ruolo),
+    # domani sara' la conseguenza di un pagamento.
+    ruolo: Mapped[str] = mapped_column(String(20), default="base", server_default="base")
     email_verificata_il: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
